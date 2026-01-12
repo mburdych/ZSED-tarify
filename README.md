@@ -200,3 +200,5 @@ MIT License
 ---
 
 **Páči sa vám táto integrácia? Dajte ⭐ na GitHube!**
+
+alebo mi pošlite na kavej https://buymeacoffee.com/mburdych
