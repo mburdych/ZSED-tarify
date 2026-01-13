@@ -20,7 +20,7 @@
 2. Kliknite na "Integrations"
 3. Kliknite na "..." v pravom hornom rohu
 4. Vyberte "Custom repositories"
-5. Pridajte URL: `https://github.com/mburdych/zse-hdo-live`
+5. Pridajte URL: `(https://github.com/mburdych/ZSED-tarify)`
 6. Kategória: `Integration`
 7. Kliknite "Add"
 8. Vyhľadajte "ZSE HDO Live" a nainštalujte
@@ -219,4 +219,4 @@ MIT License
 
 ---
 
-**Páči sa vám táto integrácia? Dajte ⭐ na GitHube!**
+**Páči sa vám táto integrácia? Dajte ⭐ na GitHube!** alebo mi kupte kavu na https://buymeacoffee.com/mburdych
