@@ -155,6 +155,12 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 
 ## 📝 Changelog
 
+### v1.0.6 (2026-01-12)
+**Oprava scheduled updates:**
+- 🐛 OPRAVA: 1day/1week/1month updaty teraz **skutočne** o 03:00
+- 🐛 Predtým: updaty "po N sekundách" od pridania
+- ✅ Teraz: presné naplánované časy (každý deň/pondelok/1. v mesiaci o 03:00)
+
 ### v1.0.5 (2026-01-12)
 **Backend vylepšenia:**
 - ✅ Konfigurovateľná frekvencia aktualizácie (5min/1h/1deň/1týždeň/1mesiac)
@@ -200,5 +206,3 @@ MIT License
 ---
 
 **Páči sa vám táto integrácia? Dajte ⭐ na GitHube!**
-
-alebo mi pošlite na kavej https://buymeacoffee.com/mburdych
