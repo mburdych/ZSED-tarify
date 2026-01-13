@@ -224,6 +224,43 @@ class ZSEHDOLiveParser:
         
         return schedule
     
+    def _calculate_current_tariff(self, schedule: Dict[str, List[Dict]]) -> str:
+        """
+        Vypočíta aktuálnu tarifu (low/high) na základe rozvrhu.
+        
+        Args:
+            schedule: Normalizovaný rozvrh s workday/weekend
+            
+        Returns:
+            "low" alebo "high"
+        """
+        from datetime import datetime
+        
+        now = datetime.now()
+        current_time = now.time()
+        is_weekend = now.weekday() >= 5  # 5=Saturday, 6=Sunday
+        
+        # Vyber správny rozvrh (pracovný deň / víkend)
+        periods = schedule["weekend"] if is_weekend else schedule["workday"]
+        
+        # Kontrola či som v niektorom období nízkej tarify
+        for period in periods:
+            start = self._parse_time(period["start"])
+            end = self._parse_time(period["end"])
+            
+            # Riešenie prelomu polnoci (napr. 23:45 - 05:45)
+            if end < start:
+                # Rozdelené cez polnoc
+                if current_time >= start or current_time < end:
+                    return "low"
+            else:
+                # Normálne obdobie v rámci dňa
+                if start <= current_time < end:
+                    return "low"
+        
+        # Ak nie som v žiadnom období nízkej tarify → vysoká tarifa
+        return "high"
+    
     async def get_all_hdo_numbers(self) -> List[int]:
         """
         Získa zoznam všetkých dostupných HDO čísel.
@@ -271,11 +308,20 @@ class ZSEHDOLiveParser:
             if rate_code == hdo_num:
                 schedule = self._normalize_schedule(rate["intervals"])
                 
+                # Získaj rate_type z prvého intervalu (všetky majú rovnaký)
+                rate_type = "Unknown"
+                if rate.get("intervals") and len(rate["intervals"]) > 0:
+                    rate_type = rate["intervals"][0].get("for_rate", "Unknown")
+                
+                # Vypočítaj aktuálnu tarifu
+                current_tariff = self._calculate_current_tariff(schedule)
+                
                 return {
                     "hdo_number": hdo_number,
                     "name": f"HDO {hdo_number}",
                     "category": "household" if rate in household else "business",
-                    "rate_type": rate.get("for_rate", "Unknown"),  # Sadzba/tarifikácia
+                    "rate_type": rate_type,
+                    "current_tariff": current_tariff,  # "low" alebo "high"
                     "workday": schedule["workday"],
                     "weekend": schedule["weekend"],
                     "last_updated": datetime.now().isoformat(),

@@ -155,6 +155,20 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 
 ## 📝 Changelog
 
+### v1.0.8 (2026-01-13)
+**Critical Bugfix:**
+- 🐛 OPRAVA: `current_tariff` atribút teraz správne vracia "low"/"high"
+- Predtým: Zobrazovalo `null` pretože parser nepočítal aktuálnu tarifu
+- Teraz: Nová metóda `_calculate_current_tariff()` vypočíta tarifu z rozvrhu
+- Rieši prechodenie cez polnoc (napr. 23:45-05:45)
+- Rozlišuje pracovný deň vs víkend
+
+### v1.0.7 (2026-01-13)
+**Bugfix:**
+- 🐛 OPRAVA: `rate_type` teraz správne extrahuje "D3 Aktiv (DD3*)" z intervalov
+- Predtým: Zobrazovalo "Unknown" namiesto skutočnej sadzby
+- Teraz: Správne zobrazuje sadzbu zo ZSE dát (z prvého intervalu)
+
 ### v1.0.6 (2026-01-12)
 **Oprava scheduled updates:**
 - 🐛 OPRAVA: 1day/1week/1month updaty teraz **skutočne** o 03:00
