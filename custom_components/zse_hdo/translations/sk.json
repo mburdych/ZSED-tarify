@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ZSE HDO - Výber HDO čísla",
+        "description": "Vyberte vaše HDO číslo zo zoznamu načítaného zo ZSE webovej stránky. Našlo sa {hdo_count} HDO čísel.",
+        "data": {
+          "hdo_number": "HDO číslo",
+          "update_frequency": "Frekvencia aktualizácie"
+        },
+        "data_description": {
+          "update_frequency": "Ako často sa majú aktualizovať HDO dáta (odporúčané: 1× týždenne)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nepodarilo sa pripojiť na ZSE webovú stránku. Skontrolujte internetové pripojenie."
+    },
+    "abort": {
+      "already_configured": "Toto HDO číslo je už nakonfigurované."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ZSE HDO - Nastavenia",
+        "description": "Zmeňte frekvenciu aktualizácie HDO dát.",
+        "data": {
+          "update_frequency": "Frekvencia aktualizácie"
+        },
+        "data_description": {
+          "update_frequency": "Ako často sa majú aktualizovať HDO dáta"
+        }
+      }
+    }
+  },
+  "selector": {
+    "update_frequency": {
+      "options": {
+        "5min": "Každých 5 minút",
+        "1hour": "Každú hodinu",
+        "1day": "1× denne (03:00)",
+        "1week": "1× týždenne (pondelok 03:00)",
+        "1month": "1× mesačne (1. deň 03:00)"
+      }
+    }
+  }
+}

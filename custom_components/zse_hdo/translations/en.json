@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ZSE HDO - Select HDO Number",
+        "description": "Select your HDO number from the list loaded from ZSE website. Found {hdo_count} HDO numbers.",
+        "data": {
+          "hdo_number": "HDO Number",
+          "update_frequency": "Update Frequency"
+        },
+        "data_description": {
+          "update_frequency": "How often to update HDO data (recommended: once a week)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to ZSE website. Check your internet connection."
+    },
+    "abort": {
+      "already_configured": "This HDO number is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ZSE HDO - Settings",
+        "description": "Change the update frequency for HDO data.",
+        "data": {
+          "update_frequency": "Update Frequency"
+        },
+        "data_description": {
+          "update_frequency": "How often to update HDO data"
+        }
+      }
+    }
+  },
+  "selector": {
+    "update_frequency": {
+      "options": {
+        "5min": "Every 5 minutes",
+        "1hour": "Every hour",
+        "1day": "Once daily (03:00)",
+        "1week": "Once weekly (Monday 03:00)",
+        "1month": "Once monthly (1st day 03:00)"
+      }
+    }
+  }
+}

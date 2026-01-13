@@ -1,0 +1,13 @@
+{
+  "domain": "zse_hdo",
+  "name": "ZSE HDO (Live) by Miroslav Burdych",
+  "codeowners": ["@mburdych"],
+  "config_flow": true,
+  "documentation": "https://github.com/mburdych/zse-hdo-live",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/mburdych/zse-hdo-live/issues",
+  "requirements": ["aiohttp>=3.8.0"],
+  "version": "1.0.6",
+  "dependencies": [],
+  "after_dependencies": []
+}
