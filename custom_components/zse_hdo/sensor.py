@@ -1,4 +1,14 @@
-"""Sensor platform for ZSE HDO Live integration."""
+"""Sensor platform for ZSE HDO Live integration.
+
+Provides binary sensor for tariff status and sensors for next switch time
+and today's schedule.
+
+Author: Miroslav Burdych (@mburdych)
+GitHub: https://github.com/mburdych/ZSED-tarify
+Support: https://buymeacoffee.com/mburdych
+
+License: MIT
+"""
 
 import logging
 from datetime import datetime, time, timedelta

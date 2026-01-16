@@ -1,4 +1,13 @@
-"""Config flow for ZSE HDO Live integration."""
+"""Config flow for ZSE HDO Live integration.
+
+Handles configuration and options flow for the integration.
+
+Author: Miroslav Burdych (@mburdych)
+GitHub: https://github.com/mburdych/ZSED-tarify
+Support: https://buymeacoffee.com/mburdych
+
+License: MIT
+"""
 
 import logging
 from typing import Any, Dict, Optional

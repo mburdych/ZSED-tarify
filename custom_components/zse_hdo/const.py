@@ -1,4 +1,11 @@
-"""Constants for ZSE HDO Live integration."""
+"""Constants for ZSE HDO Live integration.
+
+Author: Miroslav Burdych (@mburdych)
+GitHub: https://github.com/mburdych/ZSED-tarify
+Support: https://buymeacoffee.com/mburdych
+
+License: MIT
+"""
 
 DOMAIN = "zse_hdo"
 

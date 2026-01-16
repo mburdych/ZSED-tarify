@@ -3,6 +3,12 @@ ZSE HDO Live Parser
 ===================
 
 Dynamicky sťahuje a parsuje HDO dáta priamo zo ZSE webovej stránky.
+
+Author: Miroslav Burdych (@mburdych)
+GitHub: https://github.com/mburdych/ZSED-tarify
+Support: https://buymeacoffee.com/mburdych
+
+License: MIT
 """
 
 import re
