@@ -12,6 +12,14 @@
 - ✅ **Podpora všetkých 44 HDO** čísel (domácnosti aj firmy)
 - ✅ **Automatické rozlíšenie** víkend/pracovný deň
 
+## ☕ Podporte vývoj
+
+Páči sa vám táto integrácia? Pomôžte mi pokračovať vo vývoji!
+
+<a href="https://buymeacoffee.com/mburdych" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+**Každá káva ma motivuje vytvárať lepšie integrácie pre Home Assistant komunitu!** 🚀
+
 ## 📦 Inštalácia
 
 ### Cez HACS (odporúčané)
@@ -214,9 +222,15 @@ MIT License
 
 **Miroslav Burdych** - [@mburdych](https://github.com/mburdych)
 
-> 🤖 Tento balík bol vytvorený v spolupráci s **Claude Sonnet 4.5** (Anthropic)  
+> 🤖 Tento balík bol vytvorený v spolupráci s **Claude Sonnet 4.5** (Anthropic)
 > Kombinácia ľudského know-how a AI asistenta pre efektívny vývoj.
 
 ---
 
-**Páči sa vám táto integrácia? Dajte ⭐ na GitHube!** alebo mi kupte kavu na https://buymeacoffee.com/mburdych
+## 💖 Ďakujem za podporu!
+
+**Páči sa vám táto integrácia?**
+- ⭐ Dajte hviezdičku na GitHube
+- ☕ [Kúpte mi kávu](https://buymeacoffee.com/mburdych)
+
+Vaša podpora ma motivuje pokračovať vo vývoji a udržiavaní tejto integrácie!

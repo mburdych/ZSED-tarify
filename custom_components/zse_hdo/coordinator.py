@@ -1,4 +1,13 @@
-"""ZSE HDO Data Coordinator."""
+"""ZSE HDO Data Coordinator.
+
+Manages data fetching and updates for ZSE HDO integration.
+
+Author: Miroslav Burdych (@mburdych)
+GitHub: https://github.com/mburdych/ZSED-tarify
+Support: https://buymeacoffee.com/mburdych
+
+License: MIT
+"""
 import logging
 from datetime import datetime, timedelta, time
 from typing import Dict, Optional

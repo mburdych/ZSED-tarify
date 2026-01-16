@@ -1,4 +1,14 @@
-"""ZSE HDO Live Integration for Home Assistant."""
+"""ZSE HDO Live Integration for Home Assistant.
+
+This integration provides real-time monitoring of Slovak electricity HDO
+(Hours of Reduced Tariff) schedules from the ZSE website.
+
+Author: Miroslav Burdych (@mburdych)
+GitHub: https://github.com/mburdych/ZSED-tarify
+Support: https://buymeacoffee.com/mburdych
+
+License: MIT
+"""
 
 import logging
 
