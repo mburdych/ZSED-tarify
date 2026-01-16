@@ -54,23 +54,158 @@ cards:
       {% endif %}
     secondary_info: |
       {{ state_attr('binary_sensor.zse_hdo_145_tariff', 'tariff_name') }}
-    
+
   - type: custom:mushroom-template-card
     primary: "Ďalšie prepnutie"
     secondary: |
-      {{ state_attr('sensor.zse_hdo_145_next_switch', 'time') }} 
+      {{ state_attr('sensor.zse_hdo_145_next_switch', 'time') }}
       → {{ state_attr('sensor.zse_hdo_145_next_switch', 'to_tariff_name') }}
     icon: mdi:clock-outline
     icon_color: blue
-    
+
   - type: custom:mushroom-template-card
     primary: "Dnes období"
     secondary: |
-      {{ states('sensor.zse_hdo_145_today_schedule') }} období 
+      {{ states('sensor.zse_hdo_145_today_schedule') }} období
       ({{ state_attr('sensor.zse_hdo_145_today_schedule', 'day_type') }})
     icon: mdi:calendar-today
     icon_color: orange
 ```
+
+### 4. Pokročilá karta s dynamickým timeline (Advanced)
+
+**Požiadavky:**
+- `custom:mushroom-template-card` (HACS: Mushroom)
+- `card-mod` (HACS: card-mod)
+
+**Features:**
+- 📊 Dynamický timeline zobrazujúci tarify počas celého dňa
+- 🎯 Animovaná šípka ukazujúca aktuálny čas
+- 🎨 Farebné pozadie podľa aktuálnej tarify
+- 🔄 Automatické spracovanie prechodov cez polnoc
+
+```yaml
+type: custom:mushroom-template-card
+primary: ⚡ ZSE HDO 145
+secondary: |
+  Tarifa: {{ state_attr('sensor.zse_hdo_145_tarifa', 'tariff_name') }}
+  Nasledujúca Nízka tarifa: {{ states('sensor.zse_hdo_145_dalsia_lacna') }}
+icon: |
+  {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
+    mdi:flash
+  {% else %}
+    mdi:flash-off
+  {% endif %}
+icon_color: |
+  {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
+    green
+  {% else %}
+    red
+  {% endif %}
+tap_action:
+  action: more-info
+  entity: sensor.zse_hdo_145_tarifa
+multiline_secondary: true
+card_mod:
+  style: |
+    ha-card {
+      position: relative;
+      padding-bottom: 38px !important;
+      {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
+        background: rgba(76, 175, 80, 0.1);
+        border-left: 5px solid #4CAF50;
+      {% else %}
+        background: rgba(244, 67, 54, 0.1);
+        border-left: 5px solid #F44336;
+      {% endif %}
+    }
+    .secondary {
+      white-space: pre-line !important;
+      line-height: 1.5 !important;
+    }
+    /* DYNAMICKÝ TIMELINE BAR */
+    ha-card:after {
+      {% set rozvrh = state_attr('sensor.zse_hdo_145_dnesny_rozvrh', 'periods') %}
+      {% if rozvrh and rozvrh | length > 0 %}
+        {% set ns = namespace(parts=[], segments=[]) %}
+        {% for period in rozvrh %}
+          {% set start_parts = period.start.split(':') %}
+          {% set end_parts = period.end.split(':') %}
+          {% set start_h = start_parts[0] | int %}
+          {% set start_m = start_parts[1] | int %}
+          {% set end_h = end_parts[0] | int %}
+          {% set end_m = end_parts[1] | int %}
+          {% if start_h > end_h %}
+            {% set end_pct = ((end_h + end_m/60) / 24 * 100) | round(2) %}
+            {% set ns.segments = ns.segments + [{'start': 0, 'end': end_pct}] %}
+            {% set start_pct = ((start_h + start_m/60) / 24 * 100) | round(2) %}
+            {% set ns.segments = ns.segments + [{'start': start_pct, 'end': 100}] %}
+          {% else %}
+            {% set start_pct = ((start_h + start_m/60) / 24 * 100) | round(2) %}
+            {% set end_pct = ((end_h + end_m/60) / 24 * 100) | round(2) %}
+            {% set ns.segments = ns.segments + [{'start': start_pct, 'end': end_pct}] %}
+          {% endif %}
+        {% endfor %}
+        {% set ns.segments = ns.segments | sort(attribute='start') %}
+        {% set ns.last_end = 0 %}
+        {% for segment in ns.segments %}
+          {% if segment.start > ns.last_end %}
+            {% set ns.parts = ns.parts + ['#f44336 ' ~ ns.last_end ~ '%', '#f44336 ' ~ segment.start ~ '%'] %}
+          {% endif %}
+          {% set ns.parts = ns.parts + ['#4caf50 ' ~ segment.start ~ '%', '#4caf50 ' ~ segment.end ~ '%'] %}
+          {% set ns.last_end = segment.end %}
+        {% endfor %}
+        {% if ns.last_end < 100 %}
+          {% set ns.parts = ns.parts + ['#f44336 ' ~ ns.last_end ~ '%', '#f44336 100%'] %}
+        {% endif %}
+        content: "";
+        position: absolute;
+        bottom: 8px;
+        left: 16px;
+        right: 16px;
+        height: 12px;
+        background: linear-gradient(90deg, {{ ns.parts | join(', ') }});
+        border-radius: 6px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        z-index: 0;
+      {% else %}
+        content: "";
+        position: absolute;
+        bottom: 8px;
+        left: 16px;
+        right: 16px;
+        height: 12px;
+        background: #cccccc;
+        border-radius: 6px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        z-index: 0;
+      {% endif %}
+    }
+    /* ŠÍPKA ČASU */
+    ha-card:before {
+      {% set now_h = now().hour + now().minute / 60.0 %}
+      {% set pct = (now_h / 24.0 * 100.0) | round(2) %}
+      content: "▼";
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      margin-left: calc(16px + (100% - 32px) * {{ pct }} / 100);
+      transform: translateX(-50%);
+      color: orange;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 0 3px rgba(255,152,0,0.8);
+      z-index: 10;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+```
+
+**Poznámka k entitám:**
+Táto karta používa entity s pomenovaním `sensor.zse_hdo_145_tarifa`, `sensor.zse_hdo_145_dalsia_lacna` a `sensor.zse_hdo_145_dnesny_rozvrh`. Ak vaša integrácia používa iné pomenovanie (napr. `binary_sensor.zse_hdo_145_tariff`, `sensor.zse_hdo_145_next_switch`, `sensor.zse_hdo_145_today_schedule`), upravte entity ID podľa vašej konfigurácie.
 
 ## 🤖 Automation Examples
 
