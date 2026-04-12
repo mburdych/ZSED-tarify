@@ -51,7 +51,8 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         )
         
         self.frequency_type = frequency_config.get("type", "interval")
-        
+        self._last_known_data = None
+
         # Pre interval typy (5min, 1hour) použij klasický update_interval
         if self.frequency_type == "interval":
             update_interval = timedelta(seconds=frequency_config["seconds"])
@@ -61,8 +62,8 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
                 f"({frequency_config['seconds']}s)"
             )
         else:
-            # Pre scheduled typy (1day, 1week, 1month) - prvý update hneď, potom scheduled
-            update_interval = timedelta(minutes=5)  # Fallback, ale použijeme custom scheduling
+            # Pre scheduled typy (1day, 1week, 1month) - polling vypnutý, len async_track_point_in_time
+            update_interval = None
             _LOGGER.info(
                 f"Initializing coordinator for HDO {hdo_number} "
                 f"with scheduled updates: {frequency_config['label']}"
@@ -146,23 +147,27 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         """Fetch data from ZSE."""
         try:
             _LOGGER.debug(f"Fetching schedule for HDO {self.hdo_number}")
-            
+
             schedule = await self.parser.get_schedule(self.hdo_number)
-            
+
             if schedule is None:
-                raise UpdateFailed(
-                    f"HDO {self.hdo_number} not found on ZSE website"
-                )
-            
+                raise ValueError(f"HDO {self.hdo_number} not found on ZSE website")
+
             _LOGGER.debug(
                 f"Successfully loaded schedule for HDO {self.hdo_number} "
                 f"(rate: {schedule.get('rate_type', 'Unknown')})"
             )
-            
+
+            self._last_known_data = schedule
             return schedule
-            
+
         except Exception as err:
-            _LOGGER.error(
-                f"Error fetching HDO data for {self.hdo_number}: {err}"
-            )
+            _LOGGER.error(f"Error fetching HDO data for {self.hdo_number}: {err}")
+
+            if self._last_known_data is not None:
+                _LOGGER.warning(
+                    f"HDO {self.hdo_number}: using cached schedule due to fetch error"
+                )
+                return self._last_known_data
+
             raise UpdateFailed(f"Error fetching HDO data: {err}")

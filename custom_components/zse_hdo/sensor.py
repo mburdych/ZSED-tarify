@@ -59,11 +59,34 @@ class ZSEHDOTariffSensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_name = f"ZSE HDO {hdo_number} Tarifa"
         self._attr_device_class = BinarySensorDeviceClass.POWER
 
+    def _parse_time(self, time_str: str) -> time:
+        """Parse time string to time object."""
+        hour, minute = map(int, time_str.split(':'))
+        return time(hour=hour, minute=minute)
+
     @property
     def is_on(self) -> bool:
-        """Return true if low tariff is active."""
-        if self.coordinator.data:
-            return self.coordinator.data.get("current_tariff") == "low"
+        """Return true if low tariff is active (calculated dynamically from schedule)."""
+        if not self.coordinator.data:
+            return False
+
+        now = datetime.now()
+        current_time = now.time()
+        is_weekend = now.weekday() >= 5
+
+        periods = self.coordinator.data["weekend"] if is_weekend else self.coordinator.data["workday"]
+
+        for period in periods:
+            start = self._parse_time(period["start"])
+            end = self._parse_time(period["end"])
+
+            if end < start:  # midnight crossing
+                if current_time >= start or current_time < end:
+                    return True
+            else:
+                if start <= current_time < end:
+                    return True
+
         return False
 
     @property
@@ -109,52 +132,68 @@ class ZSEHDONextSwitchSensor(CoordinatorEntity, SensorEntity):
         """Calculate next tariff switch."""
         if not self.coordinator.data:
             return None
-        
+
         now = datetime.now()
         current_time = now.time()
         is_weekend = now.weekday() >= 5
-        
-        schedule = self.coordinator.data
-        periods = schedule["weekend"] if is_weekend else schedule["workday"]
-        
-        # Zoradiť periody podľa času
-        sorted_periods = sorted(periods, key=lambda p: self._parse_time(p["start"]))
-        
-        # Nájsť najbližšie prepnutie
-        for period in sorted_periods:
+
+        periods = self.coordinator.data["weekend"] if is_weekend else self.coordinator.data["workday"]
+
+        # Step 1: check if we're currently inside a low-tariff period (including midnight-crossing).
+        # If so, the next switch is to high tariff at that period's end.
+        for period in periods:
             start = self._parse_time(period["start"])
             end = self._parse_time(period["end"])
-            
-            # Prepnutie na nízku
-            if start > current_time:
-                return {
-                    "time": start.strftime("%H:%M"),
-                    "datetime": datetime.combine(now.date(), start),
-                    "to_tariff": "low",
-                    "period": period
-                }
-            
-            # Prepnutie na vysokú
-            if end > current_time and start <= current_time:
+
+            in_period = False
+            if end < start:  # midnight crossing
+                if current_time >= start or current_time < end:
+                    in_period = True
+            else:
+                if start <= current_time < end:
+                    in_period = True
+
+            if in_period:
+                end_dt = datetime.combine(now.date(), end)
+                # If we're in the before-midnight half of a crossing period, end is tomorrow
+                if end < start and current_time >= start:
+                    end_dt = datetime.combine(now.date() + timedelta(days=1), end)
                 return {
                     "time": end.strftime("%H:%M"),
-                    "datetime": datetime.combine(now.date(), end),
+                    "datetime": end_dt,
                     "to_tariff": "high",
                     "period": period
                 }
-        
-        # Ak nič nenájdeme dnes, vráť prvé prepnutie zajtra
+
+        # Step 2: not in any period — find the next period start later today.
+        candidates = []
+        for period in periods:
+            start = self._parse_time(period["start"])
+            if start > current_time:
+                candidates.append((datetime.combine(now.date(), start), period))
+
+        if candidates:
+            candidates.sort(key=lambda x: x[0])
+            next_dt, next_period = candidates[0]
+            return {
+                "time": self._parse_time(next_period["start"]).strftime("%H:%M"),
+                "datetime": next_dt,
+                "to_tariff": "low",
+                "period": next_period
+            }
+
+        # Step 3: nothing left today — return tomorrow's first period start.
+        sorted_periods = sorted(periods, key=lambda p: self._parse_time(p["start"]))
         if sorted_periods:
             first_period = sorted_periods[0]
             start = self._parse_time(first_period["start"])
-            tomorrow = now.date() + timedelta(days=1)
             return {
                 "time": start.strftime("%H:%M"),
-                "datetime": datetime.combine(tomorrow, start),
+                "datetime": datetime.combine(now.date() + timedelta(days=1), start),
                 "to_tariff": "low",
                 "period": first_period
             }
-        
+
         return None
 
     @property
