@@ -43,6 +43,7 @@ created: 2026-04-29
 | 02-01-03 | 01 | 1 | TIME-03 | — | N/A | smoke | `python custom_components/zse_hdo/parser.py` | ✅ | ⬜ pending |
 | 02-02-01 | 02 | 1 | TZ-01 | — | N/A | manual+smoke | `python -m py_compile custom_components/zse_hdo/parser.py custom_components/zse_hdo/sensor.py custom_components/zse_hdo/time_semantics.py && rg "_calculate_current_tariff|_get_next_switch|datetime\.now\(" custom_components/zse_hdo && python custom_components/zse_hdo/parser.py` | ✅ | ✅ green |
 | 02-02-02 | 02 | 1 | CODE-01 | — | N/A | manual+smoke | `python -m py_compile custom_components/zse_hdo/parser.py custom_components/zse_hdo/sensor.py custom_components/zse_hdo/time_semantics.py && rg "_calculate_current_tariff|_get_next_switch|datetime\.now\(" custom_components/zse_hdo && python custom_components/zse_hdo/parser.py` | ✅ | ✅ green |
+| 02-02-03 | 02 | 2 | TIME-02, TIME-03 | T-02-05, T-02-06 | Runtime boundary behavior validated in HA | manual+smoke | `python -m py_compile custom_components/zse_hdo/sensor.py custom_components/zse_hdo/time_semantics.py && python custom_components/zse_hdo/parser.py` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -73,4 +74,4 @@ created: 2026-04-29
 - [ ] Feedback latency < 300s
 - [ ] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved (checkpoint `Task 3` continuation signal received)
