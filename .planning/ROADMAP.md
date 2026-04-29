@@ -82,7 +82,10 @@ Plans:
 1. ✅ Uzivatel vidi konzistentne entity pre aktualny tarif, dalsi prechod a denny rozpis.
 2. ✅ Entity maju stabilne identifikatory a zrozumitelne atributy vhodne pre dashboard/automatizacie.
 3. ✅ Bezne komunitne dashboard pouzitie funguje bez hlbokej customizacie (entities karta) aj s pokrocilym timeline barom (Mushroom + card-mod recept).
-**Plans**: TBD (retroaktivne)
+**Plans**: 2 plans
+Plans:
+- [x] 05-01-PLAN.md — Zafixovanie entity presentation kontraktu cez automatizovane ID/attribute testy.
+- [ ] 05-02-PLAN.md — Docs/examples parity hardening s baseline dashboard kompatibilitou.
 **UI hint**: yes
 
 ### Phase 6: Configurability & Diagnostics
