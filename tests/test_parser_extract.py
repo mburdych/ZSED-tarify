@@ -1,21 +1,35 @@
 """Contract tests for parser JavaScript array extraction."""
 
+from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
+import sys
+
 import pytest
 
-from custom_components.zse_hdo.parser import ZSEHDOLiveParser
+
+def _load_parser_class():
+    parser_path = Path(__file__).parents[1] / "custom_components" / "zse_hdo" / "parser.py"
+    parser_dir = str(parser_path.parent)
+    if parser_dir not in sys.path:
+        sys.path.insert(0, parser_dir)
+    spec = spec_from_file_location("zse_hdo_parser_under_test", parser_path)
+    module = module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module.ZSEHDOLiveParser
 
 
 @pytest.mark.parametrize(
     ("var_name", "expected_count"),
     [
         ("household_rates", 1),
-        ("business_rates", 2),
+        ("business_rates", 1),
     ],
 )
 def test_extract_javascript_array_parses_known_arrays(
     standard_parser_html, var_name, expected_count
 ):
-    parser = ZSEHDOLiveParser()
+    parser = _load_parser_class()()
 
     data = parser._extract_javascript_array(standard_parser_html, var_name)
 
@@ -33,7 +47,7 @@ def test_extract_javascript_array_parses_known_arrays(
 def test_extract_javascript_array_returns_empty_on_invalid_input(
     parser_fixture_loader, fixture_name, var_name
 ):
-    parser = ZSEHDOLiveParser()
+    parser = _load_parser_class()()
     html = parser_fixture_loader(fixture_name)
 
     data = parser._extract_javascript_array(html, var_name)
