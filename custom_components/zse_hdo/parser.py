@@ -14,11 +14,27 @@ License: MIT
 import re
 import json
 import logging
+import time as pytime
 from typing import Dict, List, Optional
-from datetime import datetime, time
+from datetime import datetime
 
 import aiohttp
 import async_timeout
+
+try:
+    from homeassistant.util import dt as dt_util
+except ImportError:  # pragma: no cover - fallback pre standalone parser smoke test
+    class _FallbackDTUtil:
+        @staticmethod
+        def now() -> datetime:
+            return datetime.fromtimestamp(pytime.time())
+
+    dt_util = _FallbackDTUtil()
+
+try:
+    from .time_semantics import calculate_current_tariff, is_low_tariff
+except ImportError:  # pragma: no cover - standalone execution (python parser.py)
+    from time_semantics import calculate_current_tariff, is_low_tariff
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -182,19 +198,6 @@ class ZSEHDOLiveParser:
             _LOGGER.error(f"Failed to parse JavaScript array '{var_name}': {err}")
             return []
     
-    def _parse_time(self, time_str: str) -> time:
-        """
-        Konvertuje string času na datetime.time objekt.
-        
-        Args:
-            time_str: Čas vo formáte "HH:MM" alebo "H:MM"
-            
-        Returns:
-            datetime.time object
-        """
-        hour, minute = map(int, time_str.split(':'))
-        return time(hour=hour, minute=minute)
-    
     def _normalize_schedule(self, intervals: List[Dict]) -> Dict[str, List[Dict]]:
         """
         Normalizuje rozvrh do formátu použiteľného v HA.
@@ -240,32 +243,7 @@ class ZSEHDOLiveParser:
         Returns:
             "low" alebo "high"
         """
-        from datetime import datetime
-        
-        now = datetime.now()
-        current_time = now.time()
-        is_weekend = now.weekday() >= 5  # 5=Saturday, 6=Sunday
-        
-        # Vyber správny rozvrh (pracovný deň / víkend)
-        periods = schedule["weekend"] if is_weekend else schedule["workday"]
-        
-        # Kontrola či som v niektorom období nízkej tarify
-        for period in periods:
-            start = self._parse_time(period["start"])
-            end = self._parse_time(period["end"])
-            
-            # Riešenie prelomu polnoci (napr. 23:45 - 05:45)
-            if end < start:
-                # Rozdelené cez polnoc
-                if current_time >= start or current_time < end:
-                    return "low"
-            else:
-                # Normálne obdobie v rámci dňa
-                if start <= current_time < end:
-                    return "low"
-        
-        # Ak nie som v žiadnom období nízkej tarify → vysoká tarifa
-        return "high"
+        return calculate_current_tariff(schedule, now=dt_util.now())
     
     async def get_all_hdo_numbers(self) -> List[int]:
         """
@@ -330,7 +308,7 @@ class ZSEHDOLiveParser:
                     "current_tariff": current_tariff,  # "low" alebo "high"
                     "workday": schedule["workday"],
                     "weekend": schedule["weekend"],
-                    "last_updated": datetime.now().isoformat(),
+                    "last_updated": dt_util.now().isoformat(),
                     "source": ZSE_HDO_URL
                 }
         
@@ -379,25 +357,7 @@ class ZSEHDOLiveParser:
         if not schedule:
             return None
         
-        now = datetime.now()
-        current_time = now.time()
-        is_weekend = now.weekday() >= 5  # 5=sobota, 6=nedeľa
-        
-        periods = schedule["weekend"] if is_weekend else schedule["workday"]
-        
-        for period in periods:
-            start = self._parse_time(period["start"])
-            end = self._parse_time(period["end"])
-            
-            # Handle midnight crossover
-            if end < start:
-                if current_time >= start or current_time < end:
-                    return True
-            else:
-                if start <= current_time < end:
-                    return True
-        
-        return False
+        return is_low_tariff(schedule, now=dt_util.now())
 
 
 # ==============================================
