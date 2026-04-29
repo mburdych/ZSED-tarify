@@ -58,7 +58,7 @@ coordinator = DataUpdateCoordinator(
     _LOGGER,
     name=f"ZSE HDO {hdo_number}",
     update_method=async_update_data,
-    update_interval=timedelta(minutes=5),  # Každých 5 minút
+    update_interval=timedelta(minutes=5),  # Pri interval mode; scheduled mode je tiež podporovaný
 )
 ```
 
@@ -134,7 +134,7 @@ async def async_step_user(self, user_input):
 ### Metóda 1: Cez HACS (po publikovaní na GitHub)
 
 1. HACS → Integrations → ... → Custom repositories
-2. URL: `https://github.com/mburdych/zse-hdo-live`
+2. URL: `https://github.com/mburdych/ZSED-tarify`
 3. Category: Integration
 4. Vyhľadaj "ZSE HDO Live" → Install
 
@@ -251,7 +251,7 @@ def _extract_javascript_array(self, html, var_name):
 
 ### Update Interval
 
-- **Default**: 5 minút
+- **Default**: 1 týždeň (scheduled update)
 - **Customizovateľné** v `const.py`
 
 ## 🐛 DEBUGGING
@@ -303,7 +303,7 @@ target:
    git init
    git add .
    git commit -m "Initial commit - ZSE HDO Live integration"
-   git remote add origin https://github.com/mburdych/zse-hdo-live.git
+   git remote add origin https://github.com/mburdych/ZSED-tarify.git
    git push -u origin main
    ```
 
@@ -329,7 +329,7 @@ Ak máš otázky alebo problémy:
 
 ✅ Dynamicky číta zo ZSE webu (nie hardcoded!)
 ✅ Podporuje všetkých 44 HDO čísel
-✅ Automaticky sa aktualizuje každých 5 minút
+✅ Automaticky sa aktualizuje podľa zvolenej frekvencie (5 min / 1 h / 1 deň / 1 týždeň / 1 mesiac)
 ✅ Poskytuje 3 typy senzorov
 ✅ Má slovenské aj anglické preklady
 ✅ Je plne funkčná a production-ready!

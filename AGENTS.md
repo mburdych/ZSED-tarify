@@ -4,15 +4,16 @@ This file provides guidance to Codex/Cursor agents when working with code in thi
 
 ## Repository purpose
 
-Home Assistant custom integration (`custom_components/zse_hdo`) that exposes Slovak ZSE distribution-network HDO (low/high tariff) schedules as HA entities. Distributed via HACS (`hacs.json`) — there is no build, no test suite, and no package manifest. Python is loaded directly by Home Assistant at runtime.
+Home Assistant custom integration (`custom_components/zse_hdo`) that exposes Slovak ZSE distribution-network HDO (low/high tariff) schedules as HA entities. Distributed via HACS (`hacs.json`). Python is loaded directly by Home Assistant at runtime.
 
 The integration scrapes `https://www.zsdis.sk/Uvod/Online-sluzby/Casy-prepinania-nizkej-a-vysokej-tarify`, extracts two embedded JS arrays (`household_rates`, `business_rates`), and serves one HDO code per config entry.
 
 ## Running and testing
 
-There is no automated test runner. Iteration is manual:
+Automated parser/coordinator regression tests are available via `pytest`; HA runtime checks remain manual:
 
 - **Smoke-test the parser standalone** (no HA): `python custom_components/zse_hdo/parser.py` — runs the `main()` example which fetches the ZSE page, lists all HDO codes, and prints the schedule for HDO 145.
+- **Run automated tests**: `py -m pytest -q tests`
 - **In a Home Assistant dev instance**: copy/symlink `custom_components/zse_hdo/` into HA's `config/custom_components/`, restart HA, then add the integration via *Settings -> Devices & Services -> + Add Integration -> "ZSE HDO Live"*. Logs: `Settings -> System -> Logs` (filter `custom_components.zse_hdo`).
 - **Version bumps**: edit `version` in `custom_components/zse_hdo/manifest.json` and add a changelog entry to `README.md` (the README changelog section is the project's release notes).
 

@@ -88,23 +88,23 @@ cards:
 type: custom:mushroom-template-card
 primary: ⚡ ZSE HDO 145
 secondary: |
-  Tarifa: {{ state_attr('sensor.zse_hdo_145_tarifa', 'tariff_name') }}
-  Nasledujúca Nízka tarifa: {{ states('sensor.zse_hdo_145_dalsia_lacna') }}
+  Tarifa: {{ state_attr('binary_sensor.zse_hdo_145_tariff', 'tariff_name') }}
+  Nasledujúce prepnutie: {{ states('sensor.zse_hdo_145_next_switch') }}
 icon: |
-  {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
+  {% if is_state('binary_sensor.zse_hdo_145_tariff', 'on') %}
     mdi:flash
   {% else %}
     mdi:flash-off
   {% endif %}
 icon_color: |
-  {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
+  {% if is_state('binary_sensor.zse_hdo_145_tariff', 'on') %}
     green
   {% else %}
     red
   {% endif %}
 tap_action:
   action: more-info
-  entity: sensor.zse_hdo_145_tarifa
+  entity: binary_sensor.zse_hdo_145_tariff
 multiline_secondary: true
 card_mod:
   style: |
@@ -113,7 +113,7 @@ card_mod:
       padding-bottom: 38px !important;
       /* FIX: Add isolation to contain z-index within this card */
       isolation: isolate;
-      {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
+      {% if is_state('binary_sensor.zse_hdo_145_tariff', 'on') %}
         background: rgba(76, 175, 80, 0.1);
         border-left: 5px solid #4CAF50;
       {% else %}
@@ -127,7 +127,7 @@ card_mod:
     }
     /* DYNAMICKÝ TIMELINE BAR */
     ha-card:after {
-      {% set rozvrh = state_attr('sensor.zse_hdo_145_dnesny_rozvrh', 'periods') %}
+      {% set rozvrh = state_attr('sensor.zse_hdo_145_today_schedule', 'periods') %}
       {% if rozvrh and rozvrh | length > 0 %}
         {% set ns = namespace(parts=[], segments=[]) %}
         {% for period in rozvrh %}
@@ -207,7 +207,7 @@ card_mod:
 ```
 
 **Poznámka k entitám:**
-Táto karta používa entity s pomenovaním `sensor.zse_hdo_145_tarifa`, `sensor.zse_hdo_145_dalsia_lacna` a `sensor.zse_hdo_145_dnesny_rozvrh`. Ak vaša integrácia používa iné pomenovanie (napr. `binary_sensor.zse_hdo_145_tariff`, `sensor.zse_hdo_145_next_switch`, `sensor.zse_hdo_145_today_schedule`), upravte entity ID podľa vašej konfigurácie.
+Táto karta používa entity `binary_sensor.zse_hdo_145_tariff`, `sensor.zse_hdo_145_next_switch` a `sensor.zse_hdo_145_today_schedule`. Ak máte iné ID (napr. vlastné prefixy), upravte ich podľa vašej konfigurácie.
 
 ## 🤖 Automation Examples
 
@@ -256,7 +256,7 @@ automation:
                 entity_id: binary_sensor.zse_hdo_145_tariff
                 state: "on"
             sequence:
-              - service: switch.turn_on
+              - service: switch.turn_off
                 target:
                   entity_id: switch.bojler
               - service: notify.persistent_notification.create
