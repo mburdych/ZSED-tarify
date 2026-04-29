@@ -71,7 +71,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 04-01-PLAN.md — Zavedenie coordinator reliability state stroja s explicitnym retry/backoff a stale metadata pri fallbacku.
-- [ ] 04-02-PLAN.md — Propagacia stale/recovery metadata do existujucich entity atributov a recovery regresne overenie.
+- [x] 04-02-PLAN.md — Propagacia stale/recovery metadata do existujucich entity atributov a recovery regresne overenie.
 
 ### Phase 5: Home Assistant Entity Presentation
 **Goal**: Uzivatel ma k dispozicii stabilne entity a prehladny dashboardovy vystup pre kazdodenne pouzitie.
@@ -117,7 +117,7 @@ Plans:
 | 1. Async Data Fetch & Parser Contract | — | Validated v1.0.8 | 2026-01-13 |
 | 2. Tariff Time Semantics | — | Partial v1.0.8 (TZ-01, CODE-01 open) | — |
 | 3. Parser Verification Fixtures | 1/1 | Complete   | 2026-04-29 |
-| 4. Coordinator Reliability & Staleness | — | Partial v1.0.8 (RELI-03, RELI-04 open) | — |
+| 4. Coordinator Reliability & Staleness | 2/2 | Complete   | 2026-04-29 |
 | 5. Home Assistant Entity Presentation | — | Validated v1.0.8 | 2026-01-13 |
 | 6. Configurability & Diagnostics | — | Partial v1.0.8 (CONF-03 open) | — |
 | 7. Release Readiness & v1 Checkpoint | 0/0 | Not started | — |
