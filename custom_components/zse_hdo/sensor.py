@@ -11,7 +11,6 @@ License: MIT
 """
 
 import logging
-from datetime import datetime, time, timedelta
 from typing import Any, Dict, Optional
 
 from homeassistant.components.binary_sensor import (
@@ -23,8 +22,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
+from .time_semantics import calculate_next_switch, get_periods_for_datetime, is_low_tariff
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -59,35 +60,13 @@ class ZSEHDOTariffSensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_name = f"ZSE HDO {hdo_number} Tarifa"
         self._attr_device_class = BinarySensorDeviceClass.POWER
 
-    def _parse_time(self, time_str: str) -> time:
-        """Parse time string to time object."""
-        hour, minute = map(int, time_str.split(':'))
-        return time(hour=hour, minute=minute)
-
     @property
     def is_on(self) -> bool:
         """Return true if low tariff is active (calculated dynamically from schedule)."""
         if not self.coordinator.data:
             return False
 
-        now = datetime.now()
-        current_time = now.time()
-        is_weekend = now.weekday() >= 5
-
-        periods = self.coordinator.data["weekend"] if is_weekend else self.coordinator.data["workday"]
-
-        for period in periods:
-            start = self._parse_time(period["start"])
-            end = self._parse_time(period["end"])
-
-            if end < start:  # midnight crossing
-                if current_time >= start or current_time < end:
-                    return True
-            else:
-                if start <= current_time < end:
-                    return True
-
-        return False
+        return is_low_tariff(self.coordinator.data, now=dt_util.now())
 
     @property
     def extra_state_attributes(self) -> Dict[str, Any]:
@@ -123,78 +102,12 @@ class ZSEHDONextSwitchSensor(CoordinatorEntity, SensorEntity):
         self._attr_name = f"ZSE HDO {hdo_number} Ďalšie prepnutie"
         self._attr_icon = "mdi:clock-outline"
 
-    def _parse_time(self, time_str: str) -> time:
-        """Parse time string to time object."""
-        hour, minute = map(int, time_str.split(':'))
-        return time(hour=hour, minute=minute)
-
     def _get_next_switch(self) -> Optional[Dict[str, Any]]:
         """Calculate next tariff switch."""
         if not self.coordinator.data:
             return None
 
-        now = datetime.now()
-        current_time = now.time()
-        is_weekend = now.weekday() >= 5
-
-        periods = self.coordinator.data["weekend"] if is_weekend else self.coordinator.data["workday"]
-
-        # Step 1: check if we're currently inside a low-tariff period (including midnight-crossing).
-        # If so, the next switch is to high tariff at that period's end.
-        for period in periods:
-            start = self._parse_time(period["start"])
-            end = self._parse_time(period["end"])
-
-            in_period = False
-            if end < start:  # midnight crossing
-                if current_time >= start or current_time < end:
-                    in_period = True
-            else:
-                if start <= current_time < end:
-                    in_period = True
-
-            if in_period:
-                end_dt = datetime.combine(now.date(), end)
-                # If we're in the before-midnight half of a crossing period, end is tomorrow
-                if end < start and current_time >= start:
-                    end_dt = datetime.combine(now.date() + timedelta(days=1), end)
-                return {
-                    "time": end.strftime("%H:%M"),
-                    "datetime": end_dt,
-                    "to_tariff": "high",
-                    "period": period
-                }
-
-        # Step 2: not in any period — find the next period start later today.
-        candidates = []
-        for period in periods:
-            start = self._parse_time(period["start"])
-            if start > current_time:
-                candidates.append((datetime.combine(now.date(), start), period))
-
-        if candidates:
-            candidates.sort(key=lambda x: x[0])
-            next_dt, next_period = candidates[0]
-            return {
-                "time": self._parse_time(next_period["start"]).strftime("%H:%M"),
-                "datetime": next_dt,
-                "to_tariff": "low",
-                "period": next_period
-            }
-
-        # Step 3: nothing left today — return tomorrow's first period start.
-        sorted_periods = sorted(periods, key=lambda p: self._parse_time(p["start"]))
-        if sorted_periods:
-            first_period = sorted_periods[0]
-            start = self._parse_time(first_period["start"])
-            return {
-                "time": start.strftime("%H:%M"),
-                "datetime": datetime.combine(now.date() + timedelta(days=1), start),
-                "to_tariff": "low",
-                "period": first_period
-            }
-
-        return None
+        return calculate_next_switch(self.coordinator.data, now=dt_util.now())
 
     @property
     def native_value(self) -> Optional[str]:
@@ -237,10 +150,10 @@ class ZSEHDOTodayScheduleSensor(CoordinatorEntity, SensorEntity):
         if not self.coordinator.data:
             return "0"
         
-        now = datetime.now()
+        now = dt_util.now()
         is_weekend = now.weekday() >= 5
-        
-        periods = self.coordinator.data["weekend"] if is_weekend else self.coordinator.data["workday"]
+
+        periods = get_periods_for_datetime(self.coordinator.data, now)
         return str(len(periods))
 
     @property
@@ -249,11 +162,11 @@ class ZSEHDOTodayScheduleSensor(CoordinatorEntity, SensorEntity):
         if not self.coordinator.data:
             return {}
         
-        now = datetime.now()
+        now = dt_util.now()
         is_weekend = now.weekday() >= 5
-        
-        periods = self.coordinator.data["weekend"] if is_weekend else self.coordinator.data["workday"]
-        
+
+        periods = get_periods_for_datetime(self.coordinator.data, now)
+
         return {
             "day_type": "Víkend" if is_weekend else "Pracovný deň",
             "periods": periods,
