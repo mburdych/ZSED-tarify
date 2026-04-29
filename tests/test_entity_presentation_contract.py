@@ -128,3 +128,43 @@ def _build_entities():
 def test_three_entities_surface():
     entities = _build_entities()
     assert len(entities) == 3
+    assert sum(1 for entity in entities if entity.__class__.__name__.endswith("TariffSensor")) == 1
+    assert sum(1 for entity in entities if entity.__class__.__name__.endswith("NextSwitchSensor")) == 1
+    assert sum(1 for entity in entities if entity.__class__.__name__.endswith("TodayScheduleSensor")) == 1
+
+
+def test_unique_id_contract():
+    entities = _build_entities()
+    unique_ids = {entity._attr_unique_id for entity in entities}
+    assert unique_ids == {
+        "zse_hdo_145_tariff",
+        "zse_hdo_145_next_switch",
+        "zse_hdo_145_today",
+    }
+
+
+def test_required_attribute_keys_contract():
+    entities = _build_entities()
+    by_unique_id = {entity._attr_unique_id: entity.extra_state_attributes for entity in entities}
+
+    reliability_keys = {
+        "is_stale",
+        "stale_for_s",
+        "consecutive_failures",
+        "last_success_at",
+        "last_error_at",
+        "next_retry_at",
+    }
+
+    assert {"tariff_name", "hdo_number", "current_tariff"}.issubset(
+        by_unique_id["zse_hdo_145_tariff"].keys()
+    )
+    assert {"time", "to_tariff_name"}.issubset(
+        by_unique_id["zse_hdo_145_next_switch"].keys()
+    )
+    assert {"periods", "period_count"}.issubset(
+        by_unique_id["zse_hdo_145_today_schedule"].keys()
+    )
+
+    for attrs in by_unique_id.values():
+        assert reliability_keys.issubset(attrs.keys())
