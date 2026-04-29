@@ -62,7 +62,14 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `current_tariff`: low/high
   - `tariff_name`: Nízka/Vysoká
   - `category`: household/business
+  - `rate_type`: Typ sadzby (napr. `D3 Aktiv (DD3*)`)
   - `last_updated`: Čas poslednej aktualizácie
+  - `is_stale`: `true/false` či sa používajú fallback cache dáta
+  - `stale_for_s`: Vek dát v sekundách počas degraded režimu
+  - `consecutive_failures`: Počet po sebe idúcich neúspešných refreshov
+  - `last_success_at`: Čas posledného úspešného refreshu
+  - `last_error_at`: Čas poslednej chyby (ak existuje)
+  - `next_retry_at`: Čas najbližšieho retry pokusu (ak je naplánovaný)
 
 ### 2. Sensor - Ďalšie prepnutie
 - **Entity ID**: `sensor.zse_hdo_XXX_next_switch`
@@ -71,8 +78,8 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `time`: Čas prepnutia (HH:MM)
   - `to_tariff`: low/high
   - `to_tariff_name`: Nízka/Vysoká
-  - `meaning`: Účel (napr. "Ohrev teplej úžitkovej vody")
-  - `for_rate`: Typ tarify (napr. "D3 Aktiv")
+  - `rate_type`: Typ tarify (napr. "D3 Aktiv")
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
 
 ### 3. Sensor - Dnešný rozvrh
 - **Entity ID**: `sensor.zse_hdo_XXX_today_schedule`
@@ -81,11 +88,14 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `day_type`: Pracovný deň/Víkend
   - `periods`: Zoznam všetkých období
   - `period_count`: Počet období
+  - `rate_type`: Typ tarify
+  - `category`: household/business
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
 
 ## 🔄 Automatická aktualizácia
 
 - Integrácia **automaticky sťahuje** aktuálne dáta z www.zsdis.sk
-- **Interval**: Každých 5 minút
+- **Interval**: konfigurovateľný (5 min / 1 h / 1 deň / 1 týždeň / 1 mesiac)
 - **Zmeny na webe** sa automaticky prejavia v Home Assistant
 
 ## 💡 Príklady použitia
@@ -162,6 +172,14 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 - Môžete manuálne vyžiadať aktualizáciu cez Developer Tools
 
 ## 📝 Changelog
+
+### v1.1.0 (2026-04-29)
+**Reliability + test hardening release:**
+- ✅ Unified tariff/time semantics refactor and HA timezone consistency (`dt_util`)
+- ✅ Parser fixture test suite (`pytest` + `pytest-asyncio`, deterministic offline fixtures)
+- ✅ Coordinator retry/backoff + explicit stale metadata in existing entities
+- ✅ Recovery behavior: stale fields auto-reset after first successful refresh
+- ✅ Entity contract/documentation refresh for dashboard usage
 
 ### v1.0.8 (2026-01-13)
 **Critical Bugfix:**

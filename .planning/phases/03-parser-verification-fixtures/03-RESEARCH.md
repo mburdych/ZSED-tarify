@@ -238,17 +238,15 @@ Source pattern: pytest-asyncio configuration. [CITED: https://pytest-asyncio.rea
 | A2 | Best practice is to seed fixtures from captured production HTML and minimally mutate for edge cases. | Common Pitfalls | Low — test realism may be reduced if skipped. |
 | A3 | API-shape-only assertions (without value semantics) could miss meaningful regressions. | Common Pitfalls | Medium — reduced defect-detection power. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **How strict should output-shape contracts be (exact full dict vs key subsets)?**
-   - What we know: D-04 requires clear regression failures on parser output shape. [VERIFIED: `.planning/phases/03-parser-verification-fixtures/03-CONTEXT.md`]
-   - What's unclear: Whether planners want snapshot-style strictness or targeted key/value contracts.
-   - Recommendation: Start with explicit key/value invariants for critical fields; avoid brittle full-object snapshots unless justified.
+   - Resolution: Use targeted key/value contract assertions for required parser output fields (`hdo_number`, `category`, `workday`, `weekend`, `current_tariff`, `source`) instead of full-object snapshots.
+   - Rationale: This satisfies D-04 regression-gate intent while avoiding brittle failures from volatile values (for example `last_updated`). [VERIFIED: `.planning/phases/03-parser-verification-fixtures/03-CONTEXT.md`, `custom_components/zse_hdo/parser.py`]
 
 2. **Should Phase 3 include any coordinator/sensor-facing compatibility checks?**
-   - What we know: Scope is parser-only; no HA harness in this phase. [VERIFIED: `.planning/phases/03-parser-verification-fixtures/03-CONTEXT.md`]
-   - What's unclear: Whether a lightweight contract test should also validate keys expected downstream.
-   - Recommendation: Include parser payload contract checks for downstream-required keys, but keep all tests in parser layer.
+   - Resolution: Keep tests parser-layer only, but include downstream-facing parser payload key checks in `get_schedule` tests.
+   - Rationale: Honors D-02 parser-only scope and still protects parser-to-consumer contract shape required by `PARS-04`. [VERIFIED: `.planning/phases/03-parser-verification-fixtures/03-CONTEXT.md`, `.planning/REQUIREMENTS.md`]
 
 ## Environment Availability
 
