@@ -65,29 +65,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PARS-01 | TBA | Pending |
-| PARS-02 | TBA | Pending |
-| PARS-03 | TBA | Pending |
-| PARS-04 | TBA | Pending |
-| TIME-01 | TBA | Pending |
-| TIME-02 | TBA | Pending |
-| TIME-03 | TBA | Pending |
-| RELI-01 | TBA | Pending |
-| RELI-02 | TBA | Pending |
-| RELI-03 | TBA | Pending |
-| RELI-04 | TBA | Pending |
-| HAPR-01 | TBA | Pending |
-| HAPR-02 | TBA | Pending |
-| HAPR-03 | TBA | Pending |
-| CONF-01 | TBA | Pending |
-| CONF-02 | TBA | Pending |
-| CONF-03 | TBA | Pending |
+| PARS-01 | Phase 1 | Pending |
+| PARS-02 | Phase 1 | Pending |
+| PARS-03 | Phase 1 | Pending |
+| PARS-04 | Phase 3 | Pending |
+| TIME-01 | Phase 2 | Pending |
+| TIME-02 | Phase 2 | Pending |
+| TIME-03 | Phase 2 | Pending |
+| RELI-01 | Phase 4 | Pending |
+| RELI-02 | Phase 4 | Pending |
+| RELI-03 | Phase 4 | Pending |
+| RELI-04 | Phase 4 | Pending |
+| HAPR-01 | Phase 5 | Pending |
+| HAPR-02 | Phase 5 | Pending |
+| HAPR-03 | Phase 5 | Pending |
+| CONF-01 | Phase 6 | Pending |
+| CONF-02 | Phase 6 | Pending |
+| CONF-03 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-29*
-*Last updated: 2026-04-29 after initial definition*
+*Last updated: 2026-04-29 after roadmap mapping*
