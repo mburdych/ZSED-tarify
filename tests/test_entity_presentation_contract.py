@@ -114,8 +114,15 @@ def _coordinator_payload() -> dict:
 
 
 def _build_entities():
-    """Temporary placeholder for RED phase."""
-    return []
+    module = _load_sensor_module()
+    coordinator = types.SimpleNamespace(data=_coordinator_payload())
+    entry = types.SimpleNamespace(entry_id="entry-1")
+    hdo_number = 145
+    return [
+        module.ZSEHDOTariffSensor(coordinator, entry, hdo_number),
+        module.ZSEHDONextSwitchSensor(coordinator, entry, hdo_number),
+        module.ZSEHDOTodayScheduleSensor(coordinator, entry, hdo_number),
+    ]
 
 
 def test_three_entities_surface():
