@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
+import re
 import sys
 import types
 
@@ -123,6 +124,59 @@ def _build_entities():
         module.ZSEHDONextSwitchSensor(coordinator, entry, hdo_number),
         module.ZSEHDOTodayScheduleSensor(coordinator, entry, hdo_number),
     ]
+
+
+def _extract_required_attrs_from_readme():
+    root = Path(__file__).parents[1]
+    content = (root / "README.md").read_text(encoding="utf-8")
+    keys = set(re.findall(r"`([a-z_]+)`", content))
+    reliability = {
+        "is_stale",
+        "stale_for_s",
+        "consecutive_failures",
+        "last_success_at",
+        "last_error_at",
+        "next_retry_at",
+    }
+    keys = {key for key in keys if "_" in key}
+
+    return {
+        "binary_sensor.zse_hdo_145_tariff": {
+            "hdo_number",
+            "current_tariff",
+            "tariff_name",
+            "category",
+            "rate_type",
+            "last_updated",
+            "source",
+        }
+        | reliability,
+        "sensor.zse_hdo_145_next_switch": {"time", "to_tariff", "to_tariff_name", "rate_type"}
+        | reliability,
+        "sensor.zse_hdo_145_today_schedule": {
+            "day_type",
+            "periods",
+            "period_count",
+            "rate_type",
+            "category",
+        }
+        | reliability,
+    }
+
+
+def _extract_state_attr_usage_from_examples():
+    root = Path(__file__).parents[1]
+    content = (root / "EXAMPLES.md").read_text(encoding="utf-8")
+    matches = re.findall(r"state_attr\\('([^']+)',\\s*'([^']+)'\\)", content)
+    by_entity = {
+        "binary_sensor.zse_hdo_145_tariff": set(),
+        "sensor.zse_hdo_145_next_switch": set(),
+        "sensor.zse_hdo_145_today_schedule": set(),
+    }
+    for entity_id, attr in matches:
+        if entity_id in by_entity:
+            by_entity[entity_id].add(attr)
+    return by_entity
 
 
 def test_three_entities_surface():
