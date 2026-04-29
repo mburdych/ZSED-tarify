@@ -68,7 +68,10 @@ Plans:
 2. ✅ Pri docasnom vypadku zdroja ostavaju entity dostupne s poslednymi uspesnymi datami.
 3. ⏳ Refresh ma explicitny retry/backoff a nevytvara nadmernu zataz na zdroj pri opakovanej chybe.
 4. ⏳ Pouzivatel vie z entity zistit *vek* poslednej uspesnej aktualizacie (nielen timestamp).
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [x] 04-01-PLAN.md — Zavedenie coordinator reliability state stroja s explicitnym retry/backoff a stale metadata pri fallbacku.
+- [ ] 04-02-PLAN.md — Propagacia stale/recovery metadata do existujucich entity atributov a recovery regresne overenie.
 
 ### Phase 5: Home Assistant Entity Presentation
 **Goal**: Uzivatel ma k dispozicii stabilne entity a prehladny dashboardovy vystup pre kazdodenne pouzitie.

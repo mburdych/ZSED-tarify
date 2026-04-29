@@ -27,7 +27,7 @@ Requirements for the v1 release. Status: **Validated** = implemented and shipped
 
 - [x] **RELI-01** *(validated v1.0.8)*: `ZSEHDOCoordinator` (`DataUpdateCoordinator`) je jediny zdroj refresh logiky a cache pre vsetky entity.
 - [x] **RELI-02** *(validated v1.0.8 commit `9a46238`)*: Pri docasnom vypadku zdroja integracia pouzije posledne uspesne data (`_last_known_data`).
-- [ ] **RELI-03**: Explicitny retry/backoff pri opakovanych chybach (dnes spoliha na default HA refresh + dlhsie scheduled intervaly).
+- [x] **RELI-03**: Explicitny retry/backoff pri opakovanych chybach (dnes spoliha na default HA refresh + dlhsie scheduled intervaly).
 - [ ] **RELI-04**: Stav zastaranosti dat je explicitne dostupny pre uzivatela ako odlisny entity atribut/sensor (vek poslednej uspesnej aktualizacie, nielen timestamp).
 
 ### Home Assistant Presentation
