@@ -25,6 +25,11 @@ UPDATE_FREQUENCIES = {
 # Scheduled update time (for 1day/1week/1month)
 SCHEDULED_UPDATE_HOUR = 3  # 03:00
 
+# Reliability tuning for coordinator backoff/stale signaling
+RETRY_BACKOFF_MIN_SECONDS = 300
+RETRY_BACKOFF_MAX_SECONDS = 21600
+RETRY_BACKOFF_MULTIPLIER = 3
+
 # Default frequency
 DEFAULT_UPDATE_FREQUENCY = "1week"
 

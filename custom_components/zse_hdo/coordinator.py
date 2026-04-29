@@ -18,11 +18,14 @@ from homeassistant.helpers.event import async_track_point_in_time
 from homeassistant.util import dt as dt_util
 
 from .const import (
-    DOMAIN, 
-    UPDATE_FREQUENCIES, 
-    DEFAULT_UPDATE_FREQUENCY, 
+    DOMAIN,
+    UPDATE_FREQUENCIES,
+    DEFAULT_UPDATE_FREQUENCY,
     CONF_UPDATE_FREQUENCY,
-    SCHEDULED_UPDATE_HOUR
+    SCHEDULED_UPDATE_HOUR,
+    RETRY_BACKOFF_MIN_SECONDS,
+    RETRY_BACKOFF_MAX_SECONDS,
+    RETRY_BACKOFF_MULTIPLIER,
 )
 from .parser import ZSEHDOLiveParser
 
@@ -52,6 +55,12 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         
         self.frequency_type = frequency_config.get("type", "interval")
         self._last_known_data = None
+        self._last_success_at = None
+        self._last_error_at = None
+        self._consecutive_failures = 0
+        self._next_retry_at = None
+        self._scheduled_update_unsub = None
+        self._retry_update_unsub = None
 
         # Pre interval typy (5min, 1hour) použij klasický update_interval
         if self.frequency_type == "interval":
@@ -133,7 +142,7 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             self._schedule_next_update()
         
         # Zruš starý timer ak existuje
-        if hasattr(self, "_scheduled_update_unsub") and self._scheduled_update_unsub:
+        if self._scheduled_update_unsub:
             self._scheduled_update_unsub()
         
         # Naplánuj nový timer
@@ -143,8 +152,83 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             next_update
         )
 
+    def _clear_retry_update(self):
+        """Cancel pending retry timer."""
+        if self._retry_update_unsub:
+            self._retry_update_unsub()
+            self._retry_update_unsub = None
+
+    def _schedule_retry_update(self, retry_at: datetime):
+        """Plan a one-shot retry for scheduled refresh modes."""
+        if self.frequency_type != "scheduled":
+            return
+
+        self._clear_retry_update()
+
+        async def _retry_update(now):
+            """Run one retry refresh attempt."""
+            self._retry_update_unsub = None
+            _LOGGER.info(f"HDO {self.hdo_number}: Running retry update")
+            await self.async_request_refresh()
+
+        self._retry_update_unsub = async_track_point_in_time(
+            self.hass,
+            _retry_update,
+            retry_at,
+        )
+
+    def _compute_retry_delay(self) -> int:
+        """Compute bounded exponential backoff delay in seconds."""
+        if self._consecutive_failures <= 0:
+            return RETRY_BACKOFF_MIN_SECONDS
+
+        raw_delay = RETRY_BACKOFF_MIN_SECONDS * (
+            RETRY_BACKOFF_MULTIPLIER ** (self._consecutive_failures - 1)
+        )
+        return max(
+            RETRY_BACKOFF_MIN_SECONDS,
+            min(raw_delay, RETRY_BACKOFF_MAX_SECONDS),
+        )
+
+    def _calculate_stale_for_seconds(self, now: datetime) -> int:
+        """Compute stale age for the last successful refresh."""
+        if self._last_success_at is None:
+            return 0
+        return max(0, int((now - self._last_success_at).total_seconds()))
+
+    def _enrich_schedule(
+        self,
+        schedule: Dict,
+        now: datetime,
+        is_stale: bool,
+    ) -> Dict:
+        """Return schedule payload with coordinator-owned reliability metadata."""
+        payload = dict(schedule)
+        payload["is_stale"] = is_stale
+        payload["stale_for_s"] = self._calculate_stale_for_seconds(now) if is_stale else 0
+        payload["last_success_at"] = (
+            self._last_success_at.isoformat() if self._last_success_at else None
+        )
+        payload["last_error_at"] = (
+            self._last_error_at.isoformat() if self._last_error_at else None
+        )
+        payload["consecutive_failures"] = self._consecutive_failures
+        payload["next_retry_at"] = (
+            self._next_retry_at.isoformat() if self._next_retry_at else None
+        )
+        return payload
+
     async def _async_update_data(self) -> Dict:
         """Fetch data from ZSE."""
+        now = dt_util.now()
+
+        if (
+            self._next_retry_at is not None
+            and self._last_known_data is not None
+            and now < self._next_retry_at
+        ):
+            return self._enrich_schedule(self._last_known_data, now, is_stale=True)
+
         try:
             _LOGGER.debug(f"Fetching schedule for HDO {self.hdo_number}")
 
@@ -158,16 +242,30 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
                 f"(rate: {schedule.get('rate_type', 'Unknown')})"
             )
 
-            self._last_known_data = schedule
-            return schedule
+            self._last_success_at = now
+            self._last_error_at = None
+            self._consecutive_failures = 0
+            self._next_retry_at = None
+            self._clear_retry_update()
+
+            payload = self._enrich_schedule(schedule, now, is_stale=False)
+            self._last_known_data = payload
+            return payload
 
         except Exception as err:
             _LOGGER.error(f"Error fetching HDO data for {self.hdo_number}: {err}")
+            self._last_error_at = now
+            self._consecutive_failures += 1
+            retry_delay = self._compute_retry_delay()
+            self._next_retry_at = now + timedelta(seconds=retry_delay)
+            self._schedule_retry_update(self._next_retry_at)
 
             if self._last_known_data is not None:
                 _LOGGER.warning(
                     f"HDO {self.hdo_number}: using cached schedule due to fetch error"
                 )
-                return self._last_known_data
+                payload = self._enrich_schedule(self._last_known_data, now, is_stale=True)
+                self._last_known_data = payload
+                return payload
 
-            raise UpdateFailed(f"Error fetching HDO data: {err}")
+            raise UpdateFailed(f"Error fetching HDO data: {err}", retry_after=retry_delay)
