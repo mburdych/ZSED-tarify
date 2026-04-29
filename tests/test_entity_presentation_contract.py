@@ -168,3 +168,24 @@ def test_required_attribute_keys_contract():
 
     for attrs in by_unique_id.values():
         assert reliability_keys.issubset(attrs.keys())
+
+
+def test_docs_examples_attribute_parity():
+    entities = _build_entities()
+    by_entity_id = {
+        "binary_sensor.zse_hdo_145_tariff": entities[0].extra_state_attributes,
+        "sensor.zse_hdo_145_next_switch": entities[1].extra_state_attributes,
+        "sensor.zse_hdo_145_today_schedule": entities[2].extra_state_attributes,
+    }
+
+    docs_required = _extract_required_attrs_from_readme()
+    examples_required = _extract_state_attr_usage_from_examples()
+
+    assert docs_required
+    assert examples_required
+
+    for entity_id, required_keys in docs_required.items():
+        assert required_keys.issubset(by_entity_id[entity_id].keys())
+
+    for entity_id, required_keys in examples_required.items():
+        assert required_keys.issubset(by_entity_id[entity_id].keys())
