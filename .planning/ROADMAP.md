@@ -43,7 +43,7 @@
 **Plans**: 2 plans
 Plans:
 - [x] 02-01-PLAN.md — Zavedenie shared time-semantics helper vrstvy a parser migracia na HA `dt_util`.
-- [ ] 02-02-PLAN.md — Sensor migracia na shared helper + boundary verifikacia v HA runtime.
+- [x] 02-02-PLAN.md — Sensor migracia na shared helper + boundary verifikacia v HA runtime.
 
 ### Phase 3: Parser Verification Fixtures
 **Goal**: Parser korektnost je preukazatelna opakovatelne cez fixture testy pre standardne aj problemove vstupy.
