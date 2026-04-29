@@ -1,41 +1,58 @@
-# STATE: ZSED Tarify Home Assistant Integracia
+---
+gsd_state_version: 1.0
+milestone: v1.0.8
+milestone_name: milestone
+status: unknown
+last_updated: "2026-04-29T08:56:32.915Z"
+progress:
+  total_phases: 7
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+---
+
+# STATE: ZSE HDO Live Home Assistant Integracia
 
 ## Project Reference
 
-- **Core value**: Stabilna a spolahliva integracia, ktora korektne cita data zo `zsed.sk` a zrozumitelne ich prezentuje na Home Assistant dashboarde.
-- **Current focus**: Pripraveny roadmap so 100% mapovanim v1 requirements na fazy.
+- **Core value**: Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
+- **Current focus**: Brownfield roadmap zosynchronizovany so shipped realitou v1.0.8, s otvorenymi hardening/release checkpoint fazami.
 
 ## Current Position
 
-- **Current phase**: Phase 1 - Async Data Fetch & Parser Contract
+- **Current phase**: Phase 2 alebo Phase 4 (podla priority)
 - **Current plan**: Not selected (TBD)
 - **Status**: Ready for planning
-- **Progress**: 0/6 phases completed (0%)
+- **Progress**: 2/7 phases validated, 3/7 partial, 2/7 not started
 
 ## Performance Metrics
 
-- **v1 requirements total**: 17
-- **Mapped to roadmap phases**: 17
+- **v1 requirements total**: 23
+- **Mapped to roadmap phases**: 23
 - **Coverage**: 100%
 - **Open blockers**: 0
 
 ## Accumulated Context
 
 ### Key Decisions
-- Fazy su odvodenne priamo z kategorii a zavislosti requirements (nie z generickej sablony).
-- Tariff time semantics su oddelene od parser kontraktu, aby boli verifikovatelne ako samostatny uzivatelsky vysledok.
-- Reliability/staleness je samostatna faza pred prezentaciou, aby dashboard nebol postaveny na nepredvidatelnom zdroji dat.
+
+- Roadmap je brownfield-first: uz validovane capability ostali zachovane a otvorene su len realne medzery.
+- Phase 2 drzi otvorene technicke dlhy TZ-01 a CODE-01 (timezone + single-source tariff kalkulus).
+- Phase 4 drzi otvorene RELI-03 a RELI-04 (retry/backoff + staleness observability).
+- Phase 7 je povinny release checkpoint pred kazdym dalsim v1.x release.
 
 ### TODO
-- Vypracovat detailny plan pre `Phase 1` (`/gsd-plan-phase 1`).
-- Potvrdit implementacny rozsah fixture testov v `Phase 3`.
+
+- Vypracovat detailny plan pre `Phase 2` (`/gsd-plan-phase 2`) alebo `Phase 4` (`/gsd-plan-phase 4`).
+- Definovat fixture strategiu pre `Phase 3` (`PARS-04`).
+- Po doruceni otvorenych requirements pripravit `Phase 7` release checkpoint.
 
 ### Blockers
+
 - Ziadne aktualne blokery.
 
 ## Session Continuity
 
-- **Last completed action**: Vytvoreny `ROADMAP.md`, inicializovany `STATE.md`, doplnena traceability mapa v `REQUIREMENTS.md`.
-- **Next recommended command**: `/gsd-plan-phase 1`
-- **Handoff note**: Coverage je kompletna (17/17). Fazy maju definovane pozorovatelne success criteria pre downstream planovanie.
-
+- **Last completed action**: Projektove dokumenty zosynchronizovane na shipped realitu v1.0.8 (PROJECT/REQUIREMENTS/ROADMAP).
+- **Next recommended command**: `/gsd-plan-phase 2` (alebo `/gsd-plan-phase 4` pre reliability-first postup)
+- **Handoff note**: Coverage je kompletna (23/23). Otvorene su len explicitne Active requirements a release-readiness checkpoint.
