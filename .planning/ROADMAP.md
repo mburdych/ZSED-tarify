@@ -10,7 +10,7 @@
 
 - [x] **Phase 1: Async Data Fetch & Parser Contract** *(validated v1.0.8)* — Integracia spolahlivo a asynchronne nacita zdroj a validuje parser vstupny kontrakt.
 - [~] **Phase 2: Tariff Time Semantics** *(partial v1.0.8 — TZ-01/CODE-01 open)* — Integracia korektne rozhoduje aktualny tarif a dalsi prechod vo vsetkych casovych hranach.
-- [ ] **Phase 3: Parser Verification Fixtures** — Parser spravanie je overene automatizovanymi fixture testami pre bezne aj hranicne vstupy.
+- [x] **Phase 3: Parser Verification Fixtures** — Parser spravanie je overene automatizovanymi fixture testami pre bezne aj hranicne vstupy. (completed 2026-04-29)
 - [~] **Phase 4: Coordinator Reliability & Staleness** *(partial v1.0.8 — RELI-03/RELI-04 open)* — Refresh, cache fallback, backoff a staleness su predvidatelne a citatelne pre uzivatela.
 - [x] **Phase 5: Home Assistant Entity Presentation** *(validated v1.0.8)* — Entity a dashboard vystup su konzistentne, stabilne a prehladne pre komunitne pouzitie.
 - [~] **Phase 6: Configurability & Diagnostics** *(partial v1.0.8 — CONF-03 open)* — Konfiguracia a diagnostika umoznia bezne operacne zmeny a rychlejsie riesenie problemov.
@@ -54,7 +54,9 @@ Plans:
 1. Pri beznych fixture vstupoch parser vracia ocakavany vystup bez manualnych zasahov.
 2. Pri hranicnych fixture vstupoch parser bud vrati korektny model, alebo zlyha predvidatelnou diagnostickou chybou.
 3. Regresia v parseri sa prejavi ako fail testu este pred nasadenim do Home Assistant.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [x] 03-01-PLAN.md — Zavedenie offline fixture parser test stacku (`pytest` + `pytest-asyncio`) s deterministickymi kontraktmi pre extract/normalize/get_schedule.
 
 ### Phase 4: Coordinator Reliability & Staleness
 **Goal**: Refresh politika a fallback mechanizmy zabezpecia stabilny chod entit aj pocas docasnych problemov zdroja, s explicitne citatelnym vekom dat.
@@ -111,7 +113,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Async Data Fetch & Parser Contract | — | Validated v1.0.8 | 2026-01-13 |
 | 2. Tariff Time Semantics | — | Partial v1.0.8 (TZ-01, CODE-01 open) | — |
-| 3. Parser Verification Fixtures | 0/0 | Not started | — |
+| 3. Parser Verification Fixtures | 1/1 | Complete   | 2026-04-29 |
 | 4. Coordinator Reliability & Staleness | — | Partial v1.0.8 (RELI-03, RELI-04 open) | — |
 | 5. Home Assistant Entity Presentation | — | Validated v1.0.8 | 2026-01-13 |
 | 6. Configurability & Diagnostics | — | Partial v1.0.8 (CONF-03 open) | — |

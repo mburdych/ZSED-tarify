@@ -13,7 +13,7 @@ Requirements for the v1 release. Status: **Validated** = implemented and shipped
 - [x] **PARS-01** *(validated v1.0.8)*: Integracia stiahne zdrojove data zo `zsdis.sk` asynchronne bez blokovania Home Assistant event loop.
 - [x] **PARS-02** *(validated v1.0.8)*: Parser premeni zdrojove data na stabilny interny model (`workday`/`weekend` low-tariff intervaly) so schema-konzistentnym vystupom.
 - [x] **PARS-03** *(validated v1.0.8)*: Parser/coordinator korektne zlyha s diagnostickou chybou, ak sa format zdroja zmeni mimo podporovanej struktury (`UpdateFailed` + log).
-- [ ] **PARS-04**: Parser je overeny fixture testami pre bezne aj hranicne varianty vstupu.
+- [x] **PARS-04**: Parser je overeny fixture testami pre bezne aj hranicne varianty vstupu.
 
 ### Tariff Logic
 
