@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8">
+  <title>ZSE fixture</title>
+</head>
+<body>
+  <script>
+    var household_rates = [
+      {
+        code: 145,
+        intervals: [
+          { t_type: 'nt', t_from: '00:30', t_to: '02:30', weekday: true, weekend: true, meaning: 'nocny pas', for_rate: 'D3' },
+          { t_type: 'vt', t_from: '02:30', t_to: '04:30', weekday: true, weekend: true, meaning: 'vysoka', for_rate: 'D3' },
+          { t_type: 'nt', t_from: '13:00', t_to: '14:00', weekday: true, weekend: false, meaning: 'obed', for_rate: 'D3' }
+        ]
+      }
+    ];
+
+    var business_rates = [
+      {
+        code: 220,
+        intervals: [
+          { t_type: 'nt', t_from: '05:00', t_to: '06:00', weekday: true, weekend: false, meaning: 'rano', for_rate: 'B1' }
+        ]
+      }
+    ];
+  </script>
+</body>
+</html>
