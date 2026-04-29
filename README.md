@@ -100,6 +100,22 @@ Po konfigurácii sa vytvoria nasledujúce entity:
 
 ## 💡 Príklady použitia
 
+### Odporúčaný baseline bez custom kariet
+
+Základná prezentácia je plne podporovaná cez vstavanú Home Assistant kartu `type: entities`.
+Nepotrebujete `Mushroom` ani `card-mod`.
+
+```yaml
+type: entities
+title: "⚡ ZSE HDO 145 (baseline)"
+entities:
+  - entity: binary_sensor.zse_hdo_145_tariff
+  - entity: sensor.zse_hdo_145_next_switch
+  - entity: sensor.zse_hdo_145_today_schedule
+```
+
+Pokročilé vizuály (Mushroom/card-mod) sú voliteľné a sú uvedené v `EXAMPLES.md`.
+
 ### Automation - Notifikácia pri prepnutí na nízku tarifu
 
 ```yaml

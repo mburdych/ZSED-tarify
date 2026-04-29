@@ -2,7 +2,7 @@
 
 ## 📊 Lovelace Dashboard Examples
 
-### 1. Základná karta s entitami
+### 1. Základná karta s entitami (baseline bez custom kariet)
 
 ```yaml
 type: entities
@@ -18,6 +18,8 @@ entities:
 ```
 
 ### 2. Mushroom Card (odporúčané)
+
+> Voliteľné: táto karta vyžaduje HACS doplnok Mushroom.
 
 ```yaml
 type: custom:mushroom-chips-card
@@ -77,6 +79,8 @@ cards:
 **Požiadavky:**
 - `custom:mushroom-template-card` (HACS: Mushroom)
 - `card-mod` (HACS: card-mod)
+
+> Voliteľné: používajte iba ak máte nainštalované oba doplnky. Baseline zostáva karta v sekcii 1.
 
 **Features:**
 - 📊 Dynamický timeline zobrazujúci tarify počas celého dňa
