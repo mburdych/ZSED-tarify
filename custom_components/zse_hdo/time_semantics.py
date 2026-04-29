@@ -90,9 +90,9 @@ def calculate_next_switch(
         if not start or not end:
             continue
         if is_time_in_period(current_time, start, end):
-            end_dt = datetime.combine(now_dt.date(), end)
+            end_dt = datetime.combine(now_dt.date(), end, tzinfo=now_dt.tzinfo)
             if end < start and current_time >= start:
-                end_dt = datetime.combine(now_dt.date() + timedelta(days=1), end)
+                end_dt = datetime.combine(now_dt.date() + timedelta(days=1), end, tzinfo=now_dt.tzinfo)
             return {
                 "time": end.strftime("%H:%M"),
                 "datetime": end_dt,
@@ -107,7 +107,7 @@ def calculate_next_switch(
         if not start:
             continue
         if start > current_time:
-            candidates.append((datetime.combine(now_dt.date(), start), period))
+            candidates.append((datetime.combine(now_dt.date(), start, tzinfo=now_dt.tzinfo), period))
 
     if candidates:
         candidates.sort(key=lambda x: x[0])
@@ -136,7 +136,7 @@ def calculate_next_switch(
             continue
         return {
             "time": start.strftime("%H:%M"),
-            "datetime": datetime.combine(tomorrow_dt.date(), start),
+            "datetime": datetime.combine(tomorrow_dt.date(), start, tzinfo=now_dt.tzinfo),
             "to_tariff": "low",
             "period": period,
         }

@@ -111,6 +111,8 @@ card_mod:
     ha-card {
       position: relative;
       padding-bottom: 38px !important;
+      /* FIX: Add isolation to contain z-index within this card */
+      isolation: isolate;
       {% if is_state('sensor.zse_hdo_145_tarifa', 'on') %}
         background: rgba(76, 175, 80, 0.1);
         border-left: 5px solid #4CAF50;
@@ -195,7 +197,7 @@ card_mod:
       font-size: 18px;
       font-weight: bold;
       text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 0 3px rgba(255,152,0,0.8);
-      z-index: 10;
+      z-index: 1;
       animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse {
