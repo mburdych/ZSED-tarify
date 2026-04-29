@@ -139,7 +139,7 @@ def test_unique_id_contract():
     assert unique_ids == {
         "zse_hdo_145_tariff",
         "zse_hdo_145_next_switch",
-        "zse_hdo_145_today",
+        "zse_hdo_145_today_schedule",
     }
 
 
