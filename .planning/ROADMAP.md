@@ -85,7 +85,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 05-01-PLAN.md — Zafixovanie entity presentation kontraktu cez automatizovane ID/attribute testy.
-- [ ] 05-02-PLAN.md — Docs/examples parity hardening s baseline dashboard kompatibilitou.
+- [x] 05-02-PLAN.md — Docs/examples parity hardening s baseline dashboard kompatibilitou.
 **UI hint**: yes
 
 ### Phase 6: Configurability & Diagnostics
