@@ -191,17 +191,15 @@ class MyEntity(CoordinatorEntity, LightEntity):
 | A1 | Building a custom frontend card would add significant maintenance burden vs docs recipes. | Alternatives Considered | Could underestimate value of bespoke UI if team wants long-term frontend ownership. |
 | A2 | Current repo lacks docs-parity tests and needs a dedicated parity gate. | Common Pitfalls | If parity guard already exists elsewhere, planning may duplicate work. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **How strict should docs-parity checks be?**
-   - What we know: README + EXAMPLES reference concrete attributes (`tariff_name`, `time`, `to_tariff_name`, `periods`, reliability attrs). [VERIFIED: `README.md`, `EXAMPLES.md`]
-   - What's unclear: Whether phase wants strict exact-list matching or required-minimum matching.
-   - Recommendation: Use required-minimum contract to avoid blocking additive attributes.
+   - Resolution: Use required-minimum contract matching (not strict exact-list snapshot matching) so additive attributes remain non-breaking.
+   - Applied in planning: `05-01-PLAN.md` Task 2 and `05-02-PLAN.md` Task 1 explicitly require required-minimum parity assertions.
 
 2. **Do we freeze Slovak user-facing attribute labels fully?**
-   - What we know: Repo conventions require Slovak user-visible strings. [VERIFIED: `CLAUDE.md`, `AGENTS.md`]
-   - What's unclear: Whether label text itself is semver-stable or only key names are stable.
-   - Recommendation: Freeze keys as hard contract; treat wording changes as release-note gated.
+   - Resolution: Freeze attribute keys and entity IDs as the hard compatibility contract; user-facing Slovak wording remains editable but must be release-note gated.
+   - Applied in planning: `05-01-PLAN.md` enforces key/ID stability and `05-02-PLAN.md` aligns README/EXAMPLES text with contract keys.
 
 ## Environment Availability
 
