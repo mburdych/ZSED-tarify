@@ -5,14 +5,14 @@ Repeatable pre-release loop for `ZSE HDO Live`.
 ## 1) Version and metadata sync
 
 - [ ] Bump `custom_components/zse_hdo/manifest.json` `version`
-- [ ] Confirm `hacs.json` remains compatible (domain/name/min HA/repo links)
-- [ ] Ensure branch is clean and tests are passing before tag/release
+- [x] Confirm `hacs.json` remains compatible (domain/name/min HA/repo links)
+- [x] Ensure branch is clean and tests are passing before tag/release
 
 ## 2) Automated verification gate
 
-- [ ] Run full suite: `py -m pytest -q tests`
-- [ ] Resolve any failing contract tests before continuing
-- [ ] Verify no new lint issues in touched files
+- [x] Run full suite: `py -m pytest -q tests`
+- [x] Resolve any failing contract tests before continuing
+- [x] Verify no new lint issues in touched files
 
 ## 3) Manual HA smoke-test gate
 
@@ -29,9 +29,9 @@ Repeatable pre-release loop for `ZSE HDO Live`.
 ## 4) Docs and examples sync
 
 - [ ] Update `README.md` changelog with new version/date and key changes
-- [ ] Verify `README.md` entity attributes match live contract
-- [ ] Verify `EXAMPLES.md` snippets reference real entity IDs/attributes
-- [ ] Keep `AGENTS.md` and `CLAUDE.md` release/testing guidance aligned
+- [x] Verify `README.md` entity attributes match live contract
+- [x] Verify `EXAMPLES.md` snippets reference real entity IDs/attributes
+- [x] Keep `AGENTS.md` and `CLAUDE.md` release/testing guidance aligned
 
 ## 5) Release publish sequence
 
