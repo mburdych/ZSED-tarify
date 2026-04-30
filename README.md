@@ -214,6 +214,13 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 
 ## 📝 Changelog
 
+### v1.2.0 (2026-04-30)
+**Operability + value-add release:**
+- ✅ CONF-03: explicit diagnostic separation (`fetch` / `parse` / `tariff_logic`) with stable marker attributes
+- ✅ VADD-01: new helper sensor `sensor.zse_hdo_XXX_low_remaining` (remaining low-tariff minutes)
+- ✅ VADD-03: schedule-change hooks (`schedule_changed`, `schedule_change_at`) for notification automations
+- ✅ Release workflow codified in `.planning/RELEASE-CHECKLIST.md`
+
 ### v1.1.0 (2026-04-29)
 **Reliability + test hardening release:**
 - ✅ Unified tariff/time semantics refactor and HA timezone consistency (`dt_util`)

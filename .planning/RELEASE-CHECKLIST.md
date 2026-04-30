@@ -4,7 +4,7 @@ Repeatable pre-release loop for `ZSE HDO Live`.
 
 ## 1) Version and metadata sync
 
-- [ ] Bump `custom_components/zse_hdo/manifest.json` `version`
+- [x] Bump `custom_components/zse_hdo/manifest.json` `version`
 - [x] Confirm `hacs.json` remains compatible (domain/name/min HA/repo links)
 - [x] Ensure branch is clean and tests are passing before tag/release
 
@@ -28,14 +28,14 @@ Repeatable pre-release loop for `ZSE HDO Live`.
 
 ## 4) Docs and examples sync
 
-- [ ] Update `README.md` changelog with new version/date and key changes
+- [x] Update `README.md` changelog with new version/date and key changes
 - [x] Verify `README.md` entity attributes match live contract
 - [x] Verify `EXAMPLES.md` snippets reference real entity IDs/attributes
 - [x] Keep `AGENTS.md` and `CLAUDE.md` release/testing guidance aligned
 
 ## 5) Release publish sequence
 
-- [ ] Commit release metadata/docs changes
+- [x] Commit release metadata/docs changes
 - [ ] Create and push release tag matching `manifest.json` version
 - [ ] Publish GitHub release notes (same core points as README changelog)
 - [ ] Post-release sanity: fresh install path + one update path still work
