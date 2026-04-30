@@ -397,6 +397,30 @@ automation:
             ({{ state_attr('sensor.zse_hdo_145_next_switch', 'time') }})
 ```
 
+### 6. Notifikácia pri zmene harmonogramu
+
+```yaml
+automation:
+  - id: hdo_schedule_changed
+    alias: "HDO - Zmena harmonogramu"
+    description: "Upozorní keď integrácia deteguje zmenu harmonogramu na zdroji"
+    trigger:
+      - platform: template
+        value_template: >
+          {{ state_attr('binary_sensor.zse_hdo_145_tariff', 'schedule_changed') == true }}
+    condition:
+      - condition: template
+        value_template: >
+          {{ state_attr('binary_sensor.zse_hdo_145_tariff', 'schedule_change_at') is not none }}
+    action:
+      - service: notify.mobile_app_your_phone
+        data:
+          title: "🗓️ Zmena HDO harmonogramu"
+          message: >
+            Detegovaná zmena harmonogramu o
+            {{ state_attr('binary_sensor.zse_hdo_145_tariff', 'schedule_change_at') }}
+```
+
 ## 📈 Template Sensors
 
 ### 1. Čas zostávajúci do prepnutia

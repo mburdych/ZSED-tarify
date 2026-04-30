@@ -138,6 +138,8 @@ def _extract_required_attrs_from_readme():
         "last_success_at",
         "last_error_at",
         "next_retry_at",
+        "schedule_changed",
+        "schedule_change_at",
     }
     keys = {key for key in keys if "_" in key}
 
@@ -220,6 +222,8 @@ def test_required_attribute_keys_contract():
         "last_success_at",
         "last_error_at",
         "next_retry_at",
+        "schedule_changed",
+        "schedule_change_at",
     }
 
     assert {"tariff_name", "hdo_number", "current_tariff"}.issubset(

@@ -9,6 +9,8 @@ Support: https://buymeacoffee.com/mburdych
 License: MIT
 """
 import logging
+import json
+import hashlib
 from datetime import datetime, timedelta, time
 from typing import Dict, Optional
 
@@ -69,6 +71,9 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         self._diagnostic_error_source = None
         self._diagnostic_error_code = None
         self._diagnostic_error_at = None
+        self._last_schedule_fingerprint = None
+        self._last_schedule_change_at = None
+        self._schedule_changed = False
 
         # Pre interval typy (5min, 1hour) použij klasický update_interval
         if self.frequency_type == "interval":
@@ -229,7 +234,22 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         payload["diagnostic_error_at"] = (
             self._diagnostic_error_at.isoformat() if self._diagnostic_error_at else None
         )
+        payload["schedule_changed"] = self._schedule_changed
+        payload["schedule_change_at"] = (
+            self._last_schedule_change_at.isoformat()
+            if self._last_schedule_change_at
+            else None
+        )
         return payload
+
+    def _schedule_fingerprint(self, schedule: Dict) -> str:
+        """Create stable fingerprint for schedule-only payload."""
+        normalized = {
+            "workday": schedule.get("workday", []),
+            "weekend": schedule.get("weekend", []),
+        }
+        raw = json.dumps(normalized, sort_keys=True, ensure_ascii=True)
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
     def _classify_error(self, err: Exception) -> tuple[str, str]:
         """Map runtime exception to explicit diagnostic source/code."""
@@ -273,6 +293,18 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             self._diagnostic_error_source = None
             self._diagnostic_error_code = None
             self._diagnostic_error_at = None
+            new_fingerprint = self._schedule_fingerprint(schedule)
+            self._schedule_changed = (
+                self._last_schedule_fingerprint is not None
+                and self._last_schedule_fingerprint != new_fingerprint
+            )
+            if self._schedule_changed:
+                self._last_schedule_change_at = now
+                _LOGGER.info(
+                    "HDO %s: schedule change detected (fingerprint updated)",
+                    self.hdo_number,
+                )
+            self._last_schedule_fingerprint = new_fingerprint
 
             payload = self._enrich_schedule(schedule, now, is_stale=False)
             self._last_known_data = payload

@@ -71,6 +71,8 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `last_success_at`: Čas posledného úspešného refreshu
   - `last_error_at`: Čas poslednej chyby (ak existuje)
   - `next_retry_at`: Čas najbližšieho retry pokusu (ak je naplánovaný)
+  - `schedule_changed`: `true/false` či posledný úspešný refresh zistil zmenu harmonogramu
+  - `schedule_change_at`: Čas detekcie poslednej zmeny harmonogramu (ak existuje)
 
 ### 2. Sensor - Ďalšie prepnutie
 - **Entity ID**: `sensor.zse_hdo_XXX_next_switch`
@@ -80,7 +82,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `to_tariff`: low/high
   - `to_tariff_name`: Nízka/Vysoká
   - `rate_type`: Typ tarify (napr. "D3 Aktiv")
-  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`
 
 ### 3. Sensor - Dnešný rozvrh
 - **Entity ID**: `sensor.zse_hdo_XXX_today_schedule`
@@ -91,7 +93,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `period_count`: Počet období
   - `rate_type`: Typ tarify
   - `category`: household/business
-  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`
 
 ### 4. Helper Sensor - Zostávajúca nízka tarifa
 - **Entity ID**: `sensor.zse_hdo_XXX_low_remaining`
@@ -102,7 +104,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `is_low_tariff_now`: `true/false` či je práve aktívna nízka tarifa
   - `rate_type`: Typ tarify
   - `category`: household/business
-  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`
 
 ## 🔄 Automatická aktualizácia
 
