@@ -12,15 +12,17 @@ Ciel je dlhodobo stabilny plugin, ktory ostane pouzitelny aj pocas priebeznych z
 
 Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
 
-## Current Milestone: v1.2.1 Patch + Blueprint Expansion
+## Current State
 
-**Goal:** Dorucit patch stabilizaciu po v1.2.0 a rozsirenie o blueprint balicek automatizacii.
+**Shipped:** v1.2.1 (2026-04-30) — Patch & Blueprint Expansion archived.
 
-**Target features:**
-- Dorucit `VADD-02` (blueprint balicek pre bezne automacie)
-- Stabilizacne patch fixy po release `v1.2.0` (edge-case + regression cleanup)
-- Diagnosticky polish nad ramec `CONF-03` (operator readability)
-- Docs cleanup a release-ready sync pre patch cadence
+**Distribuovana verzia:** `v1.2.1` cez HACS Custom Repository.
+**Codebase:** `custom_components/zse_hdo/` + automation blueprints + fixture-based test suite.
+
+## Next Milestone Goals
+
+TBD — naplanovat cez `/gsd-new-milestone`.
+Mozne smery: post-release issue triage, dalsi VADD scope (notifikacie/automacie), parser robustness pre nove ZSE format varianty.
 
 ## Requirements
 

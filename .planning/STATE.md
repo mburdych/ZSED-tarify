@@ -1,12 +1,12 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.2.1
-milestone_name: patch-blueprint-expansion
-status: Milestone released
-last_updated: "2026-04-30T15:59:00.000Z"
+milestone_name: milestone
+status: v1.2.1 milestone complete
+last_updated: "2026-04-30T14:04:56.270Z"
 progress:
   total_phases: 15
-  completed_phases: 15
+  completed_phases: 12
   total_plans: 15
   completed_plans: 15
   percent: 100
@@ -55,6 +55,17 @@ Plan: 15-01-PLAN.md
 ### Blockers
 
 - Ziadne aktualne blokery.
+
+## Deferred Items
+
+Items acknowledged and deferred at milestone close on 2026-04-30:
+
+| Category | Item | Status |
+|----------|------|--------|
+| verification | 02-VERIFICATION.md | human_needed |
+| verification | 04-VERIFICATION.md | human_needed |
+
+Context: legacy v1.1.0 verification artifacts; ROADMAP marks Phases 02 and 04 as Validated v1.1.0 — flags persist as bookkeeping debt.
 
 ## Session Continuity
 
