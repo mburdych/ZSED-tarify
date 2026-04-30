@@ -2,7 +2,7 @@
 gsd_state_version: 1.0
 milestone: v1.2.1
 milestone_name: patch-blueprint-expansion
-status: Milestone implementation complete — release pending
+status: Milestone released
 last_updated: "2026-04-30T15:59:00.000Z"
 progress:
   total_phases: 15
@@ -17,7 +17,7 @@ progress:
 ## Project Reference
 
 - **Core value**: Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
-- **Current focus**: Release prep pre milestone v1.2.1 (all implementation phases completed).
+- **Current focus**: Post-release stabilization monitoring po `v1.2.1`.
 
 ## Current Position
 
@@ -26,7 +26,7 @@ Plan: 15-01-PLAN.md
 
 - **Current phase**: Phase 15 (DOCS-01)
 - **Current plan**: 15-01-PLAN.md completed
-- **Status**: Implementation complete, release pending
+- **Status**: Released
 - **Progress**: 15/15 phases done
 
 ## Performance Metrics
@@ -48,9 +48,9 @@ Plan: 15-01-PLAN.md
 
 ### TODO
 
-- Spustit release loop checkpoint podla `.planning/RELEASE-CHECKLIST.md`.
-- Dokoncit manual HA smoke gate pre patch release.
-- Bumpnut `manifest.json` verziu pri finalnom release kroku.
+- Monitorovat issue tracker po patch releasi `v1.2.1`.
+- Zbierat kandidatov do dalsieho milestone backlogu.
+- Udrziavat release checklist discipline pri dalsom release.
 
 ### Blockers
 
@@ -58,8 +58,8 @@ Plan: 15-01-PLAN.md
 
 ## Session Continuity
 
-- **Last completed action**: Implementacne uzavretie phases 12-15 pre v1.2.1.
-- **Next recommended command**: `/gsd-progress` alebo release checklist execution
-- **Handoff note**: Kod aj dokumentacia su pripravené na patch release gate.
+- **Last completed action**: Release run `v1.2.1` (manifest bump + tag + publish).
+- **Next recommended command**: `/gsd-progress`
+- **Handoff note**: Milestone `v1.2.1` je shipped; dalsi krok je naplanovat nasledujuci scope.
 
-**Planned Phase:** Release checkpoint (manual gates + tag/release publish) — pending — 2026-04-30T15:59:00.000Z
+**Planned Phase:** Next milestone planning — pending — 2026-04-30T16:00:00.000Z

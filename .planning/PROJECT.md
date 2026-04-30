@@ -46,10 +46,10 @@ Implementovane a overene v aktualne distribuovanej verzii **v1.2.0**:
 
 Nedostatky, ktore zostavaju otvorene v roadmap-e:
 
-- [x] **VADD-02** — pripraveny blueprint balicek pre bezne automatizacie je implementovany (release pending).
-- [x] **STAB-01** — patch stabilizacia po v1.2.0 je implementovana bez zmeny contract surface (release pending).
-- [x] **DIAG-02** — diagnosticke hlasky/metadate doplnene o severity + guidance (release pending).
-- [x] **DOCS-01** — docs cleanup a consistency pass po v1.2.0 je hotovy (release pending).
+- [x] **VADD-02** — pripraveny blueprint balicek pre bezne automatizacie je validovany v `v1.2.1`.
+- [x] **STAB-01** — patch stabilizacia po v1.2.0 je validovana bez zmeny contract surface v `v1.2.1`.
+- [x] **DIAG-02** — diagnosticke hlasky/metadate so severity + guidance su validovane v `v1.2.1`.
+- [x] **DOCS-01** — docs cleanup a consistency pass po v1.2.0 je validovany v `v1.2.1`.
 
 ### Out of Scope
 
@@ -105,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-30 — milestone v1.2.1 implementation completed, release prep in progress.*
+*Last updated: 2026-04-30 — milestone v1.2.1 released.*

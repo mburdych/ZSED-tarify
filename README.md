@@ -229,7 +229,7 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 
 ## 📝 Changelog
 
-### v1.2.1 (planned patch)
+### v1.2.1 (2026-04-30)
 **Stabilization + automation pack release:**
 - ✅ STAB-01: low-remaining helper boundary stabilization (sub-minute visibility)
 - ✅ VADD-02: shipped blueprint pack for common HDO automations
