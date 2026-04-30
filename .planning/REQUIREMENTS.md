@@ -40,7 +40,7 @@ Requirements status: **Validated** = implemented and shipped (v1.1.0), **Active*
 
 - [x] **CONF-01** *(validated v1.1.0)*: Integracia ma funkcny config flow s dynamicky nacitanym dropdownom HDO cisel zo `zsdis.sk`.
 - [x] **CONF-02** *(validated v1.1.0)*: Options flow umoznuje zmenu `update_frequency` bez znovu pridania integracie.
-- [ ] **CONF-03** *(milestone v1.2.0)*: Diagnostika/logy umoznia odlisit fetch problem, parse problem a tariff-logic chybu (oddelene markery + testovatelny log contract).
+- [x] **CONF-03** *(implemented v1.2.0)*: Diagnostika/logy umoznia odlisit fetch problem, parse problem a tariff-logic chybu (oddelene markery + testovatelny log contract).
 
 ### Release Readiness
 
@@ -48,7 +48,7 @@ Requirements status: **Validated** = implemented and shipped (v1.1.0), **Active*
 - [x] **RELEASE-02** *(validated for v1.1.0)*: README changelog je synchronny s `manifest.json:version` pri kazdom release.
 - [x] **RELEASE-03** *(validated for v1.1.0)*: Manualny smoke test v cistom HA dev instance (config flow → 3 entity → karta z `EXAMPLES.md`) pred publikaciou.
 - [x] **RELEASE-04** *(validated for v1.1.0)*: Dokumentacny suhrn (CLAUDE.md, EXAMPLES.md, README HDO list) je synchronny so spravanim kodu.
-- [ ] **RELEASE-LOOP-01** *(milestone v1.2.0)*: Release checkpoint je kodifikovany ako opakovatelny workflow/checklist pouzitelny pri kazdom dalsom release.
+- [x] **RELEASE-LOOP-01** *(implemented v1.2.0)*: Release checkpoint je kodifikovany ako opakovatelny workflow/checklist pouzitelny pri kazdom dalsom release.
 
 ## v2 Requirements
 
@@ -56,9 +56,9 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Value Add
 
-- **VADD-01** *(milestone v1.2.0)*: Integracia ponukne helper entitu pre remaining low-tariff window.
+- **VADD-01** *(implemented v1.2.0)*: Integracia ponukne helper entitu pre remaining low-tariff window.
 - **VADD-02**: Integracia ponukne pripraveny blueprint balicek pre bezne automatizacie.
-- **VADD-03** *(milestone v1.2.0)*: Integracia podpori notifikacie pri zmenach harmonogramu na zdroji.
+- **VADD-03** *(implemented v1.2.0)*: Integracia podpori notifikacie pri zmenach harmonogramu na zdroji.
 
 ## Out of Scope
 
@@ -95,22 +95,22 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HAPR-03 | Phase 5 | Validated v1.1.0 |
 | CONF-01 | Phase 6 | Validated v1.1.0 |
 | CONF-02 | Phase 6 | Validated v1.1.0 |
-| CONF-03 | Phase 8 | Active (v1.2.0) |
+| CONF-03 | Phase 8 | Implemented (v1.2.0) |
 | RELEASE-01 | Phase 7 | Validated for v1.1.0 |
 | RELEASE-02 | Phase 7 | Validated for v1.1.0 |
 | RELEASE-03 | Phase 7 | Validated for v1.1.0 |
 | RELEASE-04 | Phase 7 | Validated for v1.1.0 |
-| RELEASE-LOOP-01 | Phase 11 | Active (v1.2.0) |
-| VADD-01 | Phase 9 | Active (v1.2.0) |
+| RELEASE-LOOP-01 | Phase 11 | Implemented (v1.2.0) |
+| VADD-01 | Phase 9 | Implemented (v1.2.0) |
 | VADD-02 | Future | Deferred |
-| VADD-03 | Phase 10 | Active (v1.2.0) |
+| VADD-03 | Phase 10 | Implemented (v1.2.0) |
 
 **Coverage:**
 - v1 requirements: 23 total (17 original + 2 newly captured + 4 release-readiness)
 - Validated in v1.1.0: 22
-- Active: 4
+- Active: 0
 - Mapped to phases: 23 / Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-29*
-*Last updated: 2026-04-30 — initialized milestone v1.2.0 scope (CONF-03, VADD-01, VADD-03, RELEASE-LOOP-01).*
+*Last updated: 2026-04-30 — phase 8-11 delivered and release-loop workflow codified; remaining checks are pre-publish manual gates.*

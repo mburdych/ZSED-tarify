@@ -15,10 +15,10 @@
 - [x] **Phase 5: Home Assistant Entity Presentation** *(validated v1.1.0)* — Entity a dashboard vystup su konzistentne, stabilne a prehladne pre komunitne pouzitie.
 - [~] **Phase 6: Configurability & Diagnostics** *(partial v1.1.0 — CONF-03 open)* — Konfiguracia a diagnostika umoznia bezne operacne zmeny a rychlejsie riesenie problemov.
 - [x] **Phase 7: Release Readiness & v1 Checkpoint** *(executed for v1.1.0)* — Milestone-uroven kontrola bola aplikovana pred publikaciou v1.1.0.
-- [ ] **Phase 8: Diagnostic Signal Separation** — Dokoncit CONF-03 tak, aby logy/diagnostika jednoznacne odlisili fetch, parse a tariff-logiku.
-- [ ] **Phase 9: Remaining Low Tariff Helper Entity** — Pridat helper entitu pre zostavajuci low-tariff window (VADD-01).
-- [ ] **Phase 10: Schedule Change Notification Hooks** — Zavedenie signalizacie zmen harmonogramu pre notifikacne automatizacie (VADD-03).
-- [ ] **Phase 11: Release Loop Codification** — Kodifikovat release checkpoint ako opakovatelny workflow/checklist (RELEASE-LOOP-01).
+- [x] **Phase 8: Diagnostic Signal Separation** *(implemented v1.2.0)* — CONF-03 dorucene: explicitne odlisovanie fetch/parse/tariff-logiky + payload markery.
+- [x] **Phase 9: Remaining Low Tariff Helper Entity** *(implemented v1.2.0)* — VADD-01 dorucene: helper entita pre zostavajuci low-tariff window.
+- [x] **Phase 10: Schedule Change Notification Hooks** *(implemented v1.2.0)* — VADD-03 dorucene: signalizacia zmen harmonogramu + docs automation hook.
+- [x] **Phase 11: Release Loop Codification** *(implemented v1.2.0)* — RELEASE-LOOP-01 dorucene: opakovatelny release checklist workflow.
 
 ## Phase Details
 
@@ -121,45 +121,49 @@ Plans:
 **Goal**: Diagnostika je pre maintainera aj usera jednoznacna a testovatelna; kazdy failure path ma jasny marker.
 **Depends on**: Phase 6
 **Requirements**: CONF-03
-**Status**: **Not started**.
+**Status**: **Implemented v1.2.0**.
 **Success Criteria** (what must be TRUE):
 1. Log udalosti jednoznacne odlisuju fetch, parse a tariff-logic chyby.
 2. Error metadata je konzistentna medzi parser/coordinator/sensor vrstvami.
 3. Existuje regression test, ktory overi pritomnost markerov pri simulovanych chybach.
-**Plans**: TBD
+**Plans**:
+- [x] 08-01-PLAN.md — Diagnostic marker separation + regression coverage.
 
 ### Phase 9: Remaining Low Tariff Helper Entity
 **Goal**: Uzivatel vie bez sablon zistit, kolko casu ostava do konca aktualneho low-tariff okna.
 **Depends on**: Phase 2, Phase 8
 **Requirements**: VADD-01
-**Status**: **Not started**.
+**Status**: **Implemented v1.2.0**.
 **Success Criteria** (what must be TRUE):
 1. Nova helper entita vracia remaining low-tariff window v predvidatelnom tvare.
 2. Entita je stabilna cez den, polnoc a prechody prac. den/vikend.
 3. README/EXAMPLES obsahuje baseline pouzitie helper entity.
-**Plans**: TBD
+**Plans**:
+- [x] 09-01-PLAN.md — Helper entity + boundary semantics tests + docs parity.
 
 ### Phase 10: Schedule Change Notification Hooks
 **Goal**: Integracia poskytne signal pri zmene harmonogramu, na ktory sa da priamo naviazat notifikacia.
 **Depends on**: Phase 3, Phase 8
 **Requirements**: VADD-03
-**Status**: **Not started**.
+**Status**: **Implemented v1.2.0**.
 **Success Criteria** (what must be TRUE):
 1. Pri detekcii zmeny harmonogramu sa vytvori explicitny event/flag.
 2. Zmena harmonogramu je rozlisena od bezneho periodickeho refreshu bez zmeny.
 3. Dokumentacia obsahuje priklad automatizacie notifikacie.
-**Plans**: TBD
+**Plans**:
+- [x] 10-01-PLAN.md — Schedule-change signal hooks + contract/docs updates.
 
 ### Phase 11: Release Loop Codification
 **Goal**: Release checkpoint je formalizovany tak, aby bol opakovatelny a kratky pri kazdom dalsom releasi.
 **Depends on**: Phase 8, Phase 9, Phase 10
 **Requirements**: RELEASE-LOOP-01
-**Status**: **Not started**.
+**Status**: **Implemented v1.2.0**.
 **Success Criteria** (what must be TRUE):
 1. Existuje jednoznacny release checklist/workflow v planning/docs artefaktoch.
 2. Checklist pokryva HACS/manifest/changelog/smoke test/docs sync.
 3. Pri patch release je mozne checkpoint vykonat bez ad-hoc krokov.
-**Plans**: TBD
+**Plans**:
+- [x] 11-01-PLAN.md — Release loop codification into repeatable checklist workflow.
 
 ## Progress
 
@@ -172,10 +176,10 @@ Plans:
 | 5. Home Assistant Entity Presentation | 2/2 | Validated v1.1.0 | 2026-04-29 |
 | 6. Configurability & Diagnostics | — | Partial v1.1.0 (CONF-03 open) | — |
 | 7. Release Readiness & v1 Checkpoint | — | Validated for v1.1.0 | 2026-04-29 |
-| 8. Diagnostic Signal Separation | 0/0 | Not started | — |
-| 9. Remaining Low Tariff Helper Entity | 0/0 | Not started | — |
-| 10. Schedule Change Notification Hooks | 0/0 | Not started | — |
-| 11. Release Loop Codification | 0/0 | Not started | — |
+| 8. Diagnostic Signal Separation | 1/1 | Implemented v1.2.0 | 2026-04-30 |
+| 9. Remaining Low Tariff Helper Entity | 1/1 | Implemented v1.2.0 | 2026-04-30 |
+| 10. Schedule Change Notification Hooks | 1/1 | Implemented v1.2.0 | 2026-04-30 |
+| 11. Release Loop Codification | 1/1 | Implemented v1.2.0 | 2026-04-30 |
 
 ---
-*Last updated: 2026-04-30 — initialized milestone v1.2.0 roadmap with phases 8-11 covering CONF-03, VADD-01, VADD-03 and release-loop codification.*
+*Last updated: 2026-04-30 — phases 8-11 implemented; release-loop codified via `.planning/RELEASE-CHECKLIST.md`.*

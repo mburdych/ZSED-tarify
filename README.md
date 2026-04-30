@@ -112,6 +112,14 @@ Po konfigurácii sa vytvoria nasledujúce entity:
 - **Interval**: konfigurovateľný (5 min / 1 h / 1 deň / 1 týždeň / 1 mesiac)
 - **Zmeny na webe** sa automaticky prejavia v Home Assistant
 
+## 🚀 Release Workflow
+
+Pred každým ďalším release postupujeme cez opakovateľný checklist:
+
+- planning checklist: `.planning/RELEASE-CHECKLIST.md`
+- automated gate: `py -m pytest -q tests`
+- manual HA smoke gate: baseline entity card + diagnostics/schedule-change marker check
+
 ## 💡 Príklady použitia
 
 ### Odporúčaný baseline bez custom kariet

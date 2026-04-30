@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2.0
 milestone_name: operability-value-add
 status: Milestone initialized — defining phase plans
-last_updated: "2026-04-30T11:46:00.000Z"
+last_updated: "2026-04-30T15:35:00.000Z"
 progress:
   total_phases: 11
-  completed_phases: 6
-  total_plans: 7
-  completed_plans: 7
-  percent: 55
+  completed_phases: 11
+  total_plans: 11
+  completed_plans: 11
+  percent: 100
 ---
 
 # STATE: ZSE HDO Live Home Assistant Integracia
@@ -17,17 +17,17 @@ progress:
 ## Project Reference
 
 - **Core value**: Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
-- **Current focus**: Milestone v1.2.0 — dokoncit operabilitu a dorucit vybrane value-add body.
+- **Current focus**: Milestone v1.2.0 je implementacne dokonceny; ostavaju pred-release manual gates.
 
 ## Current Position
 
-Phase: 08 (diagnostic-signal-separation) — NOT STARTED
-Plan: —
+Phase: 11 (release-loop-codification) — IMPLEMENTED
+Plan: 11-01
 
-- **Current phase**: Phase 8 (CONF-03)
-- **Current plan**: Defining requirements
-- **Status**: Milestone initialized
-- **Progress**: 7/11 phases done, 4/11 queued for v1.2.0
+- **Current phase**: Phase 11 (RELEASE-LOOP-01)
+- **Current plan**: Completed (`11-01`)
+- **Status**: Ready for release checkpoint execution
+- **Progress**: 11/11 phases implemented
 
 ## Performance Metrics
 
@@ -42,14 +42,15 @@ Plan: —
 
 - Roadmap je brownfield-first: uz validovane capability ostali zachovane a otvorene su len realne medzery.
 - v1.1.0 uzatvorilo TZ-01, CODE-01, PARS-04, RELI-03 a RELI-04.
-- v1.2.0 scope je zafixovany: CONF-03, VADD-01, VADD-03, RELEASE-LOOP-01.
-- Fazy 8-11 pokryvaju zvysne active body a pripravu na dalsie stabilne releasy.
+- v1.2.0 scope (CONF-03, VADD-01, VADD-03, RELEASE-LOOP-01) je implementacne doruceny.
+- Release loop je kodifikovany v `.planning/RELEASE-CHECKLIST.md`.
+- Manual HA release gates su odkladane tasky pred publikaciou.
 
 ### TODO
 
-- Naplanovat `Phase 8` (`/gsd-plan-phase 8`) a dorucit CONF-03.
-- Po Phase 8 naplanovat `Phase 9` a `Phase 10` pre value-add funkcie.
-- Uzavriet `Phase 11` ako release-loop workflow pred dalsim produkcnym release.
+- Spustit release loop podla `.planning/RELEASE-CHECKLIST.md`.
+- Vykonat manual HA smoke gate (baseline entities + diagnostics + schedule-change marker).
+- Po manual gate pripravit release commit/tag pre `v1.2.0`.
 
 ### Blockers
 
@@ -57,8 +58,8 @@ Plan: —
 
 ## Session Continuity
 
-- **Last completed action**: Inicializacia milestone v1.2.0 a rozpis phases 8-11.
-- **Next recommended command**: `/gsd-plan-phase 8`
-- **Handoff note**: Scope je potvrdeny; dalsi krok je detailny plan pre diagnosticky phase.
+- **Last completed action**: Implementacia phases 8-11 + codification release loopu.
+- **Next recommended command**: `/gsd-verify-work`
+- **Handoff note**: Kod je pripraveny; pred release ostava manualny checkpoint podla checklistu.
 
-**Planned Phase:** 8 (diagnostic-signal-separation) — planning pending — 2026-04-30T11:46:00.000Z
+**Planned Phase:** 11 (release-loop-codification) — completed — 2026-04-30T15:35:00.000Z
