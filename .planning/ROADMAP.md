@@ -1,20 +1,24 @@
 # ROADMAP: ZSE HDO Live Home Assistant Integracia
 
-**Generated:** 2026-04-29
-**Last sync with shipped reality:** 2026-04-29 (v1.0.8)
+**Generated:** 2026-04-30
+**Last sync with shipped reality:** 2026-04-30 (v1.1.0) + milestone v1.2.0 planning
 **Granularity:** fine
-**Total v1 requirements:** 23
-**Coverage:** 23/23 mapped (13 Validated v1.0.8, 10 Active)
+**Total tracked requirements:** 27
+**Coverage:** 27/27 mapped (23 validated, 4 active in v1.2.0)
 
 ## Phases
 
-- [x] **Phase 1: Async Data Fetch & Parser Contract** *(validated v1.0.8)* — Integracia spolahlivo a asynchronne nacita zdroj a validuje parser vstupny kontrakt.
-- [~] **Phase 2: Tariff Time Semantics** *(partial v1.0.8 — TZ-01/CODE-01 open)* — Integracia korektne rozhoduje aktualny tarif a dalsi prechod vo vsetkych casovych hranach.
-- [x] **Phase 3: Parser Verification Fixtures** — Parser spravanie je overene automatizovanymi fixture testami pre bezne aj hranicne vstupy. (completed 2026-04-29)
-- [~] **Phase 4: Coordinator Reliability & Staleness** *(partial v1.0.8 — RELI-03/RELI-04 open)* — Refresh, cache fallback, backoff a staleness su predvidatelne a citatelne pre uzivatela.
-- [x] **Phase 5: Home Assistant Entity Presentation** *(validated v1.0.8)* — Entity a dashboard vystup su konzistentne, stabilne a prehladne pre komunitne pouzitie.
-- [~] **Phase 6: Configurability & Diagnostics** *(partial v1.0.8 — CONF-03 open)* — Konfiguracia a diagnostika umoznia bezne operacne zmeny a rychlejsie riesenie problemov.
-- [ ] **Phase 7: Release Readiness & v1 Checkpoint** — Finalna milestone-uroven kontrola pred publikaciou kazdej verzie cez HACS.
+- [x] **Phase 1: Async Data Fetch & Parser Contract** *(validated v1.1.0)* — Integracia spolahlivo a asynchronne nacita zdroj a validuje parser vstupny kontrakt.
+- [x] **Phase 2: Tariff Time Semantics** *(validated v1.1.0)* — Integracia korektne rozhoduje aktualny tarif a dalsi prechod vo vsetkych casovych hranach.
+- [x] **Phase 3: Parser Verification Fixtures** *(validated v1.1.0)* — Parser spravanie je overene automatizovanymi fixture testami pre bezne aj hranicne vstupy.
+- [x] **Phase 4: Coordinator Reliability & Staleness** *(validated v1.1.0)* — Refresh, cache fallback, backoff a staleness su predvidatelne a citatelne pre uzivatela.
+- [x] **Phase 5: Home Assistant Entity Presentation** *(validated v1.1.0)* — Entity a dashboard vystup su konzistentne, stabilne a prehladne pre komunitne pouzitie.
+- [~] **Phase 6: Configurability & Diagnostics** *(partial v1.1.0 — CONF-03 open)* — Konfiguracia a diagnostika umoznia bezne operacne zmeny a rychlejsie riesenie problemov.
+- [x] **Phase 7: Release Readiness & v1 Checkpoint** *(executed for v1.1.0)* — Milestone-uroven kontrola bola aplikovana pred publikaciou v1.1.0.
+- [ ] **Phase 8: Diagnostic Signal Separation** — Dokoncit CONF-03 tak, aby logy/diagnostika jednoznacne odlisili fetch, parse a tariff-logiku.
+- [ ] **Phase 9: Remaining Low Tariff Helper Entity** — Pridat helper entitu pre zostavajuci low-tariff window (VADD-01).
+- [ ] **Phase 10: Schedule Change Notification Hooks** — Zavedenie signalizacie zmen harmonogramu pre notifikacne automatizacie (VADD-03).
+- [ ] **Phase 11: Release Loop Codification** — Kodifikovat release checkpoint ako opakovatelny workflow/checklist (RELEASE-LOOP-01).
 
 ## Phase Details
 
@@ -22,7 +26,7 @@
 **Goal**: Integracia bez blokovania nacita data zo `zsdis.sk` a parser ich prevedie do stabilneho interneho modelu s jasnym zlyhanim pri nekompatibilnom formate.
 **Depends on**: Nothing (first phase)
 **Requirements**: PARS-01, PARS-02, PARS-03
-**Status**: **Validated v1.0.8** — vsetky 3 requirements implementovane v `parser.py` + `coordinator.py`.
+**Status**: **Validated v1.1.0** — vsetky 3 requirements implementovane v `parser.py` + `coordinator.py`.
 **Success Criteria** (what must be TRUE):
 1. ✅ Pouzivatel vie integraciu spustit bez zasekov Home Assistant event loop pocas nacitavania dat.
 2. ✅ Entitne data sa po refreshi naplnia konzistentne v rovnakom tvare pri opakovanych nahraniach rovnakeho vstupu.
@@ -33,13 +37,13 @@
 **Goal**: Uzivatel dostane korektny aktualny tarif a predikovany najblizsi prechod bez chyb na hraniciach casu, s konzistentnou TZ-aware logikou v jednom mieste.
 **Depends on**: Phase 1
 **Requirements**: TIME-01, TIME-02, TIME-03, **TZ-01**, **CODE-01**
-**Status**: **Partial** — TIME-01/02/03 validated v1.0.8 (commit `9a46238`); TZ-01 a CODE-01 zostavaju otvorene.
+**Status**: **Validated v1.1.0** — TIME-01/02/03 + TZ-01 + CODE-01 dorucene.
 **Success Criteria** (what must be TRUE):
 1. ✅ V lubovolnom case dna sa v entite zobrazi spravny aktualny tarif podla harmonogramu.
 2. ✅ Atribut/prehlad nasledujuceho prechodu zodpoveda realnemu najblizsiemu prepnutiu.
 3. ✅ Spravanie ostava korektne pri prechode cez polnoc a medzi pracovnym dnom a vikendom.
-4. ⏳ Vsetky datum/cas vypocty pouzivaju `homeassistant.util.dt` (HA timezone), nie `datetime.now()`.
-5. ⏳ Tariff/midnight kalkulus existuje len v jednom mieste; sensory volaju spolocnu helper funkciu.
+4. ✅ Vsetky datum/cas vypocty pouzivaju `homeassistant.util.dt` (HA timezone), nie `datetime.now()`.
+5. ✅ Tariff/midnight kalkulus existuje v shared helper vrstve; sensory volaju spolocnu helper funkciu.
 **Plans**: 2 plans
 Plans:
 - [x] 02-01-PLAN.md — Zavedenie shared time-semantics helper vrstvy a parser migracia na HA `dt_util`.
@@ -49,7 +53,7 @@ Plans:
 **Goal**: Parser korektnost je preukazatelna opakovatelne cez fixture testy pre standardne aj problemove vstupy.
 **Depends on**: Phase 1, Phase 2
 **Requirements**: PARS-04
-**Status**: **Not started** — repo zatial nema test runner ani fixtures.
+**Status**: **Validated v1.1.0** — fixture testy su sucastou `tests/fixtures` + parser test suite.
 **Success Criteria** (what must be TRUE):
 1. Pri beznych fixture vstupoch parser vracia ocakavany vystup bez manualnych zasahov.
 2. Pri hranicnych fixture vstupoch parser bud vrati korektny model, alebo zlyha predvidatelnou diagnostickou chybou.
@@ -62,12 +66,12 @@ Plans:
 **Goal**: Refresh politika a fallback mechanizmy zabezpecia stabilny chod entit aj pocas docasnych problemov zdroja, s explicitne citatelnym vekom dat.
 **Depends on**: Phase 1, Phase 2
 **Requirements**: RELI-01, RELI-02, RELI-03, RELI-04
-**Status**: **Partial** — RELI-01/02 validated v1.0.8 (commit `9a46238`); RELI-03/04 zostavaju otvorene.
+**Status**: **Validated v1.1.0** — RELI-01/02/03/04 dorucene.
 **Success Criteria** (what must be TRUE):
 1. ✅ Vsetky entity citaju data cez jednotnu coordinator refresh/cache vrstvu.
 2. ✅ Pri docasnom vypadku zdroja ostavaju entity dostupne s poslednymi uspesnymi datami.
-3. ⏳ Refresh ma explicitny retry/backoff a nevytvara nadmernu zataz na zdroj pri opakovanej chybe.
-4. ⏳ Pouzivatel vie z entity zistit *vek* poslednej uspesnej aktualizacie (nielen timestamp).
+3. ✅ Refresh ma explicitny retry/backoff a nevytvara nadmernu zataz na zdroj pri opakovanej chybe.
+4. ✅ Pouzivatel vie z entity zistit *vek* poslednej uspesnej aktualizacie (nielen timestamp).
 **Plans**: 2 plans
 Plans:
 - [x] 04-01-PLAN.md — Zavedenie coordinator reliability state stroja s explicitnym retry/backoff a stale metadata pri fallbacku.
@@ -77,7 +81,7 @@ Plans:
 **Goal**: Uzivatel ma k dispozicii stabilne entity a prehladny dashboardovy vystup pre kazdodenne pouzitie.
 **Depends on**: Phase 2, Phase 4
 **Requirements**: HAPR-01, HAPR-02, HAPR-03
-**Status**: **Validated v1.0.8** — 3 entity + Mushroom/card-mod recepty v `EXAMPLES.md`.
+**Status**: **Validated v1.1.0** — 3 entity + Mushroom/card-mod recepty v `EXAMPLES.md`.
 **Success Criteria** (what must be TRUE):
 1. ✅ Uzivatel vidi konzistentne entity pre aktualny tarif, dalsi prechod a denny rozpis.
 2. ✅ Entity maju stabilne identifikatory a zrozumitelne atributy vhodne pre dashboard/automatizacie.
@@ -92,7 +96,7 @@ Plans:
 **Goal**: Uzivatel vie integraciu jednoducho nastavit, upravit refresh spravanie a rychlo rozpoznat typ problemy.
 **Depends on**: Phase 4, Phase 5
 **Requirements**: CONF-01, CONF-02, CONF-03
-**Status**: **Partial** — CONF-01/02 validated v1.0.8; CONF-03 zostava otvorene.
+**Status**: **Partial** — CONF-01/02 validated v1.1.0; CONF-03 zostava otvorene.
 **Success Criteria** (what must be TRUE):
 1. ✅ Uzivatel vie integraciu nakonfigurovat cez funkcny Home Assistant config flow.
 2. ✅ Uzivatel vie menit refresh spravanie bez odstranenia integracie cez options flow.
@@ -103,7 +107,7 @@ Plans:
 **Goal**: Pred kazdym `manifest.json:version` bumpom je integracia preverena ako celok — HACS validacia, README/CLAUDE/EXAMPLES sync, manualny smoke test v cistom HA, ziadny otvoreny v1 requirement bez explicitneho deferral.
 **Depends on**: Phase 1, Phase 2, Phase 3, Phase 4, Phase 5, Phase 6
 **Requirements**: RELEASE-01, RELEASE-02, RELEASE-03, RELEASE-04
-**Status**: **Not started** — z hladiska checkpoint procesu; v1.0.8 bola uvedena ad-hoc.
+**Status**: **Validated for v1.1.0** — checkpoint bol vykonany pred release, ostava ako opakovatelna cadence.
 **Success Criteria** (what must be TRUE):
 1. `hacs.json` + `manifest.json` su konzistentne; git tag verzie zodpoveda `manifest.json:version`.
 2. README changelog ma novu verziu s datumom + zoznamom zmien (release notes na uvod sekcie su projektovy zdroj).
@@ -113,17 +117,65 @@ Plans:
 **Plans**: TBD
 **Cadence**: Phase 7 sa spusta pri kazdej predzevreznej milestone (kazdy v1.x release pred publikaciou).
 
+### Phase 8: Diagnostic Signal Separation
+**Goal**: Diagnostika je pre maintainera aj usera jednoznacna a testovatelna; kazdy failure path ma jasny marker.
+**Depends on**: Phase 6
+**Requirements**: CONF-03
+**Status**: **Not started**.
+**Success Criteria** (what must be TRUE):
+1. Log udalosti jednoznacne odlisuju fetch, parse a tariff-logic chyby.
+2. Error metadata je konzistentna medzi parser/coordinator/sensor vrstvami.
+3. Existuje regression test, ktory overi pritomnost markerov pri simulovanych chybach.
+**Plans**: TBD
+
+### Phase 9: Remaining Low Tariff Helper Entity
+**Goal**: Uzivatel vie bez sablon zistit, kolko casu ostava do konca aktualneho low-tariff okna.
+**Depends on**: Phase 2, Phase 8
+**Requirements**: VADD-01
+**Status**: **Not started**.
+**Success Criteria** (what must be TRUE):
+1. Nova helper entita vracia remaining low-tariff window v predvidatelnom tvare.
+2. Entita je stabilna cez den, polnoc a prechody prac. den/vikend.
+3. README/EXAMPLES obsahuje baseline pouzitie helper entity.
+**Plans**: TBD
+
+### Phase 10: Schedule Change Notification Hooks
+**Goal**: Integracia poskytne signal pri zmene harmonogramu, na ktory sa da priamo naviazat notifikacia.
+**Depends on**: Phase 3, Phase 8
+**Requirements**: VADD-03
+**Status**: **Not started**.
+**Success Criteria** (what must be TRUE):
+1. Pri detekcii zmeny harmonogramu sa vytvori explicitny event/flag.
+2. Zmena harmonogramu je rozlisena od bezneho periodickeho refreshu bez zmeny.
+3. Dokumentacia obsahuje priklad automatizacie notifikacie.
+**Plans**: TBD
+
+### Phase 11: Release Loop Codification
+**Goal**: Release checkpoint je formalizovany tak, aby bol opakovatelny a kratky pri kazdom dalsom releasi.
+**Depends on**: Phase 8, Phase 9, Phase 10
+**Requirements**: RELEASE-LOOP-01
+**Status**: **Not started**.
+**Success Criteria** (what must be TRUE):
+1. Existuje jednoznacny release checklist/workflow v planning/docs artefaktoch.
+2. Checklist pokryva HACS/manifest/changelog/smoke test/docs sync.
+3. Pri patch release je mozne checkpoint vykonat bez ad-hoc krokov.
+**Plans**: TBD
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Async Data Fetch & Parser Contract | — | Validated v1.0.8 | 2026-01-13 |
-| 2. Tariff Time Semantics | — | Partial v1.0.8 (TZ-01, CODE-01 open) | — |
-| 3. Parser Verification Fixtures | 1/1 | Complete   | 2026-04-29 |
-| 4. Coordinator Reliability & Staleness | 2/2 | Complete   | 2026-04-29 |
-| 5. Home Assistant Entity Presentation | — | Validated v1.0.8 | 2026-01-13 |
-| 6. Configurability & Diagnostics | — | Partial v1.0.8 (CONF-03 open) | — |
-| 7. Release Readiness & v1 Checkpoint | 0/0 | Not started | — |
+| 1. Async Data Fetch & Parser Contract | — | Validated v1.1.0 | 2026-04-29 |
+| 2. Tariff Time Semantics | 2/2 | Validated v1.1.0 | 2026-04-29 |
+| 3. Parser Verification Fixtures | 1/1 | Validated v1.1.0 | 2026-04-29 |
+| 4. Coordinator Reliability & Staleness | 2/2 | Validated v1.1.0 | 2026-04-29 |
+| 5. Home Assistant Entity Presentation | 2/2 | Validated v1.1.0 | 2026-04-29 |
+| 6. Configurability & Diagnostics | — | Partial v1.1.0 (CONF-03 open) | — |
+| 7. Release Readiness & v1 Checkpoint | — | Validated for v1.1.0 | 2026-04-29 |
+| 8. Diagnostic Signal Separation | 0/0 | Not started | — |
+| 9. Remaining Low Tariff Helper Entity | 0/0 | Not started | — |
+| 10. Schedule Change Notification Hooks | 0/0 | Not started | — |
+| 11. Release Loop Codification | 0/0 | Not started | — |
 
 ---
-*Last updated: 2026-04-29 — synced with shipped v1.0.8 reality, fixed `zsed.sk` → `zsdis.sk`, added Phase 7 final checkpoint, statuses reflect existing implementation.*
+*Last updated: 2026-04-30 — initialized milestone v1.2.0 roadmap with phases 8-11 covering CONF-03, VADD-01, VADD-03 and release-loop codification.*

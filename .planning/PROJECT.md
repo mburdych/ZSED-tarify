@@ -12,11 +12,21 @@ Ciel je dlhodobo stabilny plugin, ktory ostane pouzitelny aj pocas priebeznych z
 
 Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
 
+## Current Milestone: v1.2.0 Operability + Value Add
+
+**Goal:** Dokoncit diagnosticku operabilitu a dorucit najblizsie value-add funkcie bez narusenia stability jadra.
+
+**Target features:**
+- Dokoncit `CONF-03` (jednoznacne oddelenie fetch/parse/tariff chyb v logoch)
+- Pridat `VADD-01` helper entity pre remaining low-tariff window
+- Pridat `VADD-03` notifikacny signal pri zmene harmonogramu
+- Zaviest opakovatelny release-checkpoint workflow pre kazdy dalsi release
+
 ## Requirements
 
 ### Validated
 
-Implementovane pred zalozenim tohto roadmap-u, overene v aktualne distribuovanej verzii **v1.0.8**:
+Implementovane a overene v aktualne distribuovanej verzii **v1.1.0**:
 
 - [x] **PARS-01** — async fetch zo `zsdis.sk` cez `aiohttp` bez blokovania HA event loop.
 - [x] **PARS-02** — parser produkuje stabilny interny model (`workday`/`weekend` polia s low-tariff intervalmi).
@@ -36,12 +46,10 @@ Implementovane pred zalozenim tohto roadmap-u, overene v aktualne distribuovanej
 
 Nedostatky, ktore zostavaju otvorene v roadmap-e:
 
-- [ ] **PARS-04** — fixture testy pre parser (zatial nie je ziadny test runner v repo).
-- [ ] **RELI-03** — explicitny retry/backoff pri opakovanych chybach (dnes spoliha na default HA refresh).
-- [ ] **RELI-04** — uzivatelsky citatelna *staleness* (vek poslednej uspesnej aktualizacie ako entitny atribut/sensor).
 - [ ] **CONF-03** — diagnostika musi v logoch jednoznacne odlisit fetch / parse / tariff-logic chyby.
-- [ ] **CODE-01** *(noveho razenia)* — duplicita tariff/midnight kalkulu medzi `parser._calculate_current_tariff`, `ZSEHDOTariffSensor.is_on` a `ZSEHDONextSwitchSensor._get_next_switch` — single source of truth.
-- [ ] **TZ-01** *(noveho razenia)* — konzistentne pouzitie `homeassistant.util.dt` namiesto `datetime.now()` v parseri/sensoroch (HA timezone awareness).
+- [ ] **VADD-01** — helper entita pre zostavajuci cas do konca aktualneho low-tariff okna.
+- [ ] **VADD-03** — detekcia zmeny harmonogramu + event/flag pre naviazanie notifikacii.
+- [ ] **RELEASE-LOOP-01** — release checkpoint workflow ako povinna opakovatelna cadence pri kazdom dalsom release.
 
 ### Out of Scope
 
@@ -55,7 +63,7 @@ Nedostatky, ktore zostavaju otvorene v roadmap-e:
 ## Context
 
 Projekt je zamerany na komunitne pouzitie ako verejne zdielany plugin distribuovany cez HACS Custom Repository.
-Zdrojova funkcionalita je v `custom_components/zse_hdo/` a je v aktivnej distribucii (v1.0.8).
+Zdrojova funkcionalita je v `custom_components/zse_hdo/` a je v aktivnej distribucii (v1.1.0).
 Primarny zdroj dat je `www.zsdis.sk`, kde su HDO harmonogramy ulozene ako embedded JavaScript polia (`household_rates`, `business_rates`).
 Prezentacna priorita je kvalita dashboardu v HA — samotne nacitanie dat nie je hodnota; hodnota je co uzivatel vidi.
 
@@ -72,8 +80,8 @@ Prezentacna priorita je kvalita dashboardu v HA — samotne nacitanie dat nie je
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Prioritou parsera je presnost dat | Nekorektne hodnoty znizuju doveru a pouzitelnost integracie | Validated v1.0.8 |
-| Prioritou prezentacie su dashboardy v Home Assistant | Koncovy uzivatel hodnotu vidi najma cez dashboard | Validated v1.0.8 (3 entity + EXAMPLES.md recepty) |
+| Prioritou parsera je presnost dat | Nekorektne hodnoty znizuju doveru a pouzitelnost integracie | Validated v1.1.0 |
+| Prioritou prezentacie su dashboardy v Home Assistant | Koncovy uzivatel hodnotu vidi najma cez dashboard | Validated v1.1.0 (3 entity + EXAMPLES.md recepty) |
 | Scraping namiesto API | ZSE/ZSDIS neposkytuje verejne API — embedded JS pole je jediny dostupny zdroj | Accepted; kompenzovane fixture-test plánom (PARS-04) |
 | Dashboard cez externe HACS pluginy, nie vlastna JS karta | Niksi maintenance burden; pluginy uz su zauzivane v komunite | Accepted; pokryte ako "out of scope" pre v1 |
 | Default refresh frequency = `1week` | Harmonogram zdroja sa meni zriedka; setri zataz na `zsdis.sk` | Validated v1.0.5+ |
@@ -97,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-29 — synced with shipped v1.0.8 reality, fixed source URL (zsed.sk → zsdis.sk).*
+*Last updated: 2026-04-30 — initialized milestone v1.2.0 (CONF-03, VADD-01, VADD-03, release-loop hardening).*

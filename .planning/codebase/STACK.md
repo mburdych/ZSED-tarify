@@ -1,6 +1,6 @@
 # Technology Stack
 
-**Analysis Date:** 2026-04-12
+**Analysis Date:** 2026-04-30
 
 ## Languages
 
@@ -37,12 +37,13 @@
 - `homeassistant.helpers.config_validation as cv` — HA-specific validators (`config_flow.py`)
 
 **Testing:**
-- None — no test framework configured; no test files present
-- Standalone manual testing via `python custom_components/zse_hdo/parser.py` (runs `main()`)
+- `pytest` test framework configured (`pytest.ini`)
+- Automated test suite present in `tests/` (parser fixtures, coordinator reliability, entity presentation contract)
+- Standalone manual smoke testing via `python custom_components/zse_hdo/parser.py` (runs `main()`)
 
 **Build/Dev:**
 - No build pipeline
-- No linting or formatting configuration files present
+- No dedicated linting or formatting configuration files present
 - No CI/CD configuration
 
 ## Key Dependencies
@@ -62,7 +63,7 @@
 - Config stored in HA's config entries system (`hass.data[DOMAIN][entry_id]`)
 
 **Build:**
-- `manifest.json` — integration metadata, version (`1.0.8`), requirements
+- `manifest.json` — integration metadata, version (`1.1.0`), requirements
 - `hacs.json` — HACS marketplace metadata (country: SK, min HA: 2024.1.0)
 
 ## Platform Requirements
@@ -78,4 +79,4 @@
 
 ---
 
-*Stack analysis: 2026-04-12*
+*Stack analysis: 2026-04-30*

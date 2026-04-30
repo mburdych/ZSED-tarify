@@ -28,6 +28,11 @@ from .const import (
     RETRY_BACKOFF_MULTIPLIER,
 )
 from .parser import ZSEHDOLiveParser
+from .parser import (
+    ZSEHDOFetchError,
+    ZSEHDOParseError,
+    ZSEHDOTariffLogicError,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,6 +66,9 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         self._next_retry_at = None
         self._scheduled_update_unsub = None
         self._retry_update_unsub = None
+        self._diagnostic_error_source = None
+        self._diagnostic_error_code = None
+        self._diagnostic_error_at = None
 
         # Pre interval typy (5min, 1hour) použij klasický update_interval
         if self.frequency_type == "interval":
@@ -216,7 +224,22 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         payload["next_retry_at"] = (
             self._next_retry_at.isoformat() if self._next_retry_at else None
         )
+        payload["diagnostic_error_source"] = self._diagnostic_error_source
+        payload["diagnostic_error_code"] = self._diagnostic_error_code
+        payload["diagnostic_error_at"] = (
+            self._diagnostic_error_at.isoformat() if self._diagnostic_error_at else None
+        )
         return payload
+
+    def _classify_error(self, err: Exception) -> tuple[str, str]:
+        """Map runtime exception to explicit diagnostic source/code."""
+        if isinstance(err, ZSEHDOFetchError):
+            return ("fetch", "FETCH_ERROR")
+        if isinstance(err, ZSEHDOParseError):
+            return ("parse", "PARSE_ERROR")
+        if isinstance(err, ZSEHDOTariffLogicError):
+            return ("tariff_logic", "TARIFF_LOGIC_ERROR")
+        return ("fetch", "UNKNOWN_ERROR")
 
     async def _async_update_data(self) -> Dict:
         """Fetch data from ZSE."""
@@ -247,15 +270,28 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             self._consecutive_failures = 0
             self._next_retry_at = None
             self._clear_retry_update()
+            self._diagnostic_error_source = None
+            self._diagnostic_error_code = None
+            self._diagnostic_error_at = None
 
             payload = self._enrich_schedule(schedule, now, is_stale=False)
             self._last_known_data = payload
             return payload
 
         except Exception as err:
-            _LOGGER.error(f"Error fetching HDO data for {self.hdo_number}: {err}")
+            diagnostic_source, diagnostic_code = self._classify_error(err)
+            _LOGGER.error(
+                "Error fetching HDO data for %s [%s/%s]: %s",
+                self.hdo_number,
+                diagnostic_source,
+                diagnostic_code,
+                err,
+            )
             self._last_error_at = now
             self._consecutive_failures += 1
+            self._diagnostic_error_source = diagnostic_source
+            self._diagnostic_error_code = diagnostic_code
+            self._diagnostic_error_at = now
             retry_delay = self._compute_retry_delay()
             self._next_retry_at = now + timedelta(seconds=retry_delay)
             self._schedule_retry_update(self._next_retry_at)

@@ -39,6 +39,9 @@ def _reliability_attrs(data: Dict[str, Any]) -> Dict[str, Any]:
         "last_success_at": data.get("last_success_at"),
         "last_error_at": data.get("last_error_at"),
         "next_retry_at": data.get("next_retry_at"),
+        "diagnostic_error_source": data.get("diagnostic_error_source"),
+        "diagnostic_error_code": data.get("diagnostic_error_code"),
+        "diagnostic_error_at": data.get("diagnostic_error_at"),
     }
 
 

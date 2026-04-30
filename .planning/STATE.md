@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0.8
-milestone_name: milestone
-status: Phase complete — ready for verification
-last_updated: "2026-04-29T16:25:28.132Z"
+milestone: v1.2.0
+milestone_name: operability-value-add
+status: Milestone initialized — defining phase plans
+last_updated: "2026-04-30T11:46:00.000Z"
 progress:
-  total_phases: 7
-  completed_phases: 4
+  total_phases: 11
+  completed_phases: 6
   total_plans: 7
   completed_plans: 7
-  percent: 100
+  percent: 55
 ---
 
 # STATE: ZSE HDO Live Home Assistant Integracia
@@ -17,22 +17,22 @@ progress:
 ## Project Reference
 
 - **Core value**: Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
-- **Current focus**: Brownfield roadmap zosynchronizovany so shipped realitou v1.0.8, s otvorenymi hardening/release checkpoint fazami.
+- **Current focus**: Milestone v1.2.0 — dokoncit operabilitu a dorucit vybrane value-add body.
 
 ## Current Position
 
-Phase: 05 (home-assistant-entity-presentation) — EXECUTING
-Plan: 2 of 2
+Phase: 08 (diagnostic-signal-separation) — NOT STARTED
+Plan: —
 
-- **Current phase**: Phase 2 alebo Phase 4 (podla priority)
-- **Current plan**: Not selected (TBD)
-- **Status**: Ready for planning
-- **Progress**: 2/7 phases validated, 3/7 partial, 2/7 not started
+- **Current phase**: Phase 8 (CONF-03)
+- **Current plan**: Defining requirements
+- **Status**: Milestone initialized
+- **Progress**: 7/11 phases done, 4/11 queued for v1.2.0
 
 ## Performance Metrics
 
-- **v1 requirements total**: 23
-- **Mapped to roadmap phases**: 23
+- **tracked requirements total**: 27
+- **Mapped to roadmap phases**: 27
 - **Coverage**: 100%
 - **Open blockers**: 0
 
@@ -41,15 +41,15 @@ Plan: 2 of 2
 ### Key Decisions
 
 - Roadmap je brownfield-first: uz validovane capability ostali zachovane a otvorene su len realne medzery.
-- Phase 2 drzi otvorene technicke dlhy TZ-01 a CODE-01 (timezone + single-source tariff kalkulus).
-- Phase 4 drzi otvorene RELI-03 a RELI-04 (retry/backoff + staleness observability).
-- Phase 7 je povinny release checkpoint pred kazdym dalsim v1.x release.
+- v1.1.0 uzatvorilo TZ-01, CODE-01, PARS-04, RELI-03 a RELI-04.
+- v1.2.0 scope je zafixovany: CONF-03, VADD-01, VADD-03, RELEASE-LOOP-01.
+- Fazy 8-11 pokryvaju zvysne active body a pripravu na dalsie stabilne releasy.
 
 ### TODO
 
-- Vypracovat detailny plan pre `Phase 2` (`/gsd-plan-phase 2`) alebo `Phase 4` (`/gsd-plan-phase 4`).
-- Definovat fixture strategiu pre `Phase 3` (`PARS-04`).
-- Po doruceni otvorenych requirements pripravit `Phase 7` release checkpoint.
+- Naplanovat `Phase 8` (`/gsd-plan-phase 8`) a dorucit CONF-03.
+- Po Phase 8 naplanovat `Phase 9` a `Phase 10` pre value-add funkcie.
+- Uzavriet `Phase 11` ako release-loop workflow pred dalsim produkcnym release.
 
 ### Blockers
 
@@ -57,8 +57,8 @@ Plan: 2 of 2
 
 ## Session Continuity
 
-- **Last completed action**: Projektove dokumenty zosynchronizovane na shipped realitu v1.0.8 (PROJECT/REQUIREMENTS/ROADMAP).
-- **Next recommended command**: `/gsd-plan-phase 2` (alebo `/gsd-plan-phase 4` pre reliability-first postup)
-- **Handoff note**: Coverage je kompletna (23/23). Otvorene su len explicitne Active requirements a release-readiness checkpoint.
+- **Last completed action**: Inicializacia milestone v1.2.0 a rozpis phases 8-11.
+- **Next recommended command**: `/gsd-plan-phase 8`
+- **Handoff note**: Scope je potvrdeny; dalsi krok je detailny plan pre diagnosticky phase.
 
-**Planned Phase:** 5 (home-assistant-entity-presentation) — 2 plans — 2026-04-29T15:58:50.963Z
+**Planned Phase:** 8 (diagnostic-signal-separation) — planning pending — 2026-04-30T11:46:00.000Z

@@ -45,6 +45,22 @@ ZSE_HDO_URL = "https://www.zsdis.sk/Uvod/Online-sluzby/Casy-prepinania-nizkej-a-
 REQUEST_TIMEOUT = 30
 
 
+class ZSEHDODiagnosticError(Exception):
+    """Base diagnostic error for explicit source classification."""
+
+
+class ZSEHDOFetchError(ZSEHDODiagnosticError):
+    """Raised when source fetch fails."""
+
+
+class ZSEHDOParseError(ZSEHDODiagnosticError):
+    """Raised when source payload parsing fails."""
+
+
+class ZSEHDOTariffLogicError(ZSEHDODiagnosticError):
+    """Raised when tariff logic calculation fails."""
+
+
 class ZSEHDOLiveParser:
     """Parser pre live ZSE HDO dáta z webu."""
 
@@ -100,10 +116,10 @@ class ZSEHDOLiveParser:
                     return html
         except aiohttp.ClientError as err:
             _LOGGER.error(f"Failed to fetch HDO data: {err}")
-            raise
+            raise ZSEHDOFetchError(str(err)) from err
         except Exception as err:
             _LOGGER.error(f"Unexpected error fetching HDO data: {err}")
-            raise
+            raise ZSEHDOFetchError(str(err)) from err
     
     def _extract_javascript_array(self, html: str, var_name: str) -> List[Dict]:
         """
@@ -123,7 +139,7 @@ class ZSEHDOLiveParser:
         match = re.search(pattern, html)
         if not match:
             _LOGGER.warning(f"JavaScript variable '{var_name}' not found in HTML")
-            return []
+            raise ZSEHDOParseError(f"JavaScript variable '{var_name}' not found")
         
         # Začiatok array
         start_pos = match.end() - 1  # Pozícia prvej '['
@@ -169,7 +185,7 @@ class ZSEHDOLiveParser:
         
         if bracket_count != 0:
             _LOGGER.error(f"Unmatched brackets in '{var_name}'")
-            return []
+            raise ZSEHDOParseError(f"Unmatched brackets in '{var_name}'")
         
         # Extrahuj array
         js_array = html[start_pos:end_pos]
@@ -196,7 +212,9 @@ class ZSEHDOLiveParser:
             return data
         except json.JSONDecodeError as err:
             _LOGGER.error(f"Failed to parse JavaScript array '{var_name}': {err}")
-            return []
+            raise ZSEHDOParseError(
+                f"Failed to parse JavaScript array '{var_name}'"
+            ) from err
     
     def _normalize_schedule(self, intervals: List[Dict]) -> Dict[str, List[Dict]]:
         """
@@ -279,6 +297,8 @@ class ZSEHDOLiveParser:
         business = self._extract_javascript_array(html, "business_rates")
         
         all_rates = household + business
+        if not all_rates:
+            raise ZSEHDOParseError("No tariff arrays parsed from source payload")
         
         # Debug logging
         _LOGGER.debug(f"Searching for HDO {hdo_number} (type: {type(hdo_number).__name__})")
@@ -298,7 +318,12 @@ class ZSEHDOLiveParser:
                     rate_type = rate["intervals"][0].get("for_rate", "Unknown")
                 
                 # Vypočítaj aktuálnu tarifu
-                current_tariff = self._calculate_current_tariff(schedule)
+                try:
+                    current_tariff = self._calculate_current_tariff(schedule)
+                except Exception as err:
+                    raise ZSEHDOTariffLogicError(
+                        f"Failed to calculate current tariff for HDO {hdo_number}"
+                    ) from err
                 
                 return {
                     "hdo_number": hdo_number,

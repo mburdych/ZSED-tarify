@@ -70,6 +70,9 @@ def _load_coordinator_module():
     sys.modules["homeassistant.util.dt"] = ha_dt
 
     parser_stub = types.ModuleType("custom_components.zse_hdo.parser")
+    parser_stub.ZSEHDOFetchError = type("ZSEHDOFetchError", (Exception,), {})
+    parser_stub.ZSEHDOParseError = type("ZSEHDOParseError", (Exception,), {})
+    parser_stub.ZSEHDOTariffLogicError = type("ZSEHDOTariffLogicError", (Exception,), {})
     parser_stub.ZSEHDOLiveParser = object
     sys.modules["custom_components.zse_hdo.parser"] = parser_stub
 
