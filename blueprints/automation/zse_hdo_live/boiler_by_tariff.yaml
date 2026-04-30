@@ -1,0 +1,40 @@
+blueprint:
+  name: ZSE HDO - Boiler by tariff
+  description: Turn boiler switch on at low tariff and off at high tariff.
+  domain: automation
+  input:
+    tariff_entity:
+      name: Tariff binary sensor
+      selector:
+        entity:
+          domain: binary_sensor
+    boiler_switch:
+      name: Boiler switch
+      selector:
+        entity:
+          domain: switch
+
+mode: restart
+
+trigger:
+  - platform: state
+    entity_id: !input tariff_entity
+
+action:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: !input tariff_entity
+            state: "on"
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: !input boiler_switch
+      - conditions:
+          - condition: state
+            entity_id: !input tariff_entity
+            state: "off"
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: !input boiler_switch

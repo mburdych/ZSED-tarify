@@ -1,0 +1,35 @@
+blueprint:
+  name: ZSE HDO - Notify on low tariff start
+  description: Send a notification when low tariff turns on.
+  domain: automation
+  input:
+    tariff_entity:
+      name: Tariff binary sensor
+      description: ZSE HDO tariff binary sensor.
+      selector:
+        entity:
+          domain: binary_sensor
+    notify_service:
+      name: Notify service
+      description: Notify service to call (e.g. notify.mobile_app_phone).
+      selector:
+        text:
+    message:
+      name: Notification message
+      description: Message sent when low tariff starts.
+      default: "Zapnula sa nizka tarifa."
+      selector:
+        text:
+
+mode: single
+
+trigger:
+  - platform: state
+    entity_id: !input tariff_entity
+    to: "on"
+
+action:
+  - service: !input notify_service
+    data:
+      title: "ZSE HDO"
+      message: !input message

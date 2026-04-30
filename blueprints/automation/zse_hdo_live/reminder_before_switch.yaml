@@ -1,0 +1,57 @@
+blueprint:
+  name: ZSE HDO - Reminder before switch
+  description: Notify N minutes before next tariff switch.
+  domain: automation
+  input:
+    next_switch_entity:
+      name: Next switch sensor
+      selector:
+        entity:
+          domain: sensor
+    notify_service:
+      name: Notify service
+      selector:
+        text:
+    lead_minutes:
+      name: Minutes before switch
+      default: 15
+      selector:
+        number:
+          min: 1
+          max: 120
+          mode: slider
+    message_prefix:
+      name: Message prefix
+      default: "HDO upozornenie"
+      selector:
+        text:
+
+mode: single
+
+variables:
+  next_switch_entity: !input next_switch_entity
+  lead_minutes: !input lead_minutes
+  message_prefix: !input message_prefix
+
+trigger:
+  - platform: time_pattern
+    minutes: "/1"
+
+condition:
+  - condition: template
+    value_template: >
+      {% set ts = as_timestamp(states(next_switch_entity)) %}
+      {% if ts is none %}
+        false
+      {% else %}
+        {% set diff = ((ts - as_timestamp(now())) / 60) | float(9999) %}
+        {{ diff <= (lead_minutes | int) and diff > ((lead_minutes | int) - 1) }}
+      {% endif %}
+
+action:
+  - service: !input notify_service
+    data:
+      title: "ZSE HDO"
+      message: >
+        {{ message_prefix }}: o {{ lead_minutes }} min prepnutie na
+        {{ state_attr(next_switch_entity, 'to_tariff_name') }}.

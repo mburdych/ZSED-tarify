@@ -226,6 +226,15 @@ Odporúčaná baseline teraz zahŕňa aj `sensor.zse_hdo_145_low_remaining`.
 
 ## 🤖 Automation Examples
 
+### Blueprint pack (odporúčané pre rýchly štart)
+
+Použi pripravené blueprinty:
+- `blueprints/automation/zse_hdo_live/notify_low_tariff_on.yaml`
+- `blueprints/automation/zse_hdo_live/boiler_by_tariff.yaml`
+- `blueprints/automation/zse_hdo_live/reminder_before_switch.yaml`
+
+V HA ich importuj cez **Settings -> Automations & Scenes -> Blueprints**.
+
 ### 1. Notifikácia pri prepnutí na nízku tarifu
 
 ```yaml

@@ -120,6 +120,19 @@ Pred každým ďalším release postupujeme cez opakovateľný checklist:
 - automated gate: `py -m pytest -q tests`
 - manual HA smoke gate: baseline entity card + diagnostics/schedule-change marker check
 
+## 🧩 Blueprint balíček (v1.2.1)
+
+Repo obsahuje pripravené Home Assistant blueprinty:
+
+- `blueprints/automation/zse_hdo_live/notify_low_tariff_on.yaml`
+- `blueprints/automation/zse_hdo_live/boiler_by_tariff.yaml`
+- `blueprints/automation/zse_hdo_live/reminder_before_switch.yaml`
+
+Import v HA:
+1. Settings -> Automations & Scenes -> Blueprints
+2. Import blueprint
+3. Vyber súbor z uvedeného priečinka
+
 ## 💡 Príklady použitia
 
 ### Odporúčaný baseline bez custom kariet
