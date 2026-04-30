@@ -26,7 +26,7 @@ Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` 
 
 ### Validated
 
-Implementovane a overene v aktualne distribuovanej verzii **v1.1.0**:
+Implementovane a overene v aktualne distribuovanej verzii **v1.2.0**:
 
 - [x] **PARS-01** — async fetch zo `zsdis.sk` cez `aiohttp` bez blokovania HA event loop.
 - [x] **PARS-02** — parser produkuje stabilny interny model (`workday`/`weekend` polia s low-tariff intervalmi).
@@ -63,7 +63,7 @@ Nedostatky, ktore zostavaju otvorene v roadmap-e:
 ## Context
 
 Projekt je zamerany na komunitne pouzitie ako verejne zdielany plugin distribuovany cez HACS Custom Repository.
-Zdrojova funkcionalita je v `custom_components/zse_hdo/` a je v aktivnej distribucii (v1.1.0).
+Zdrojova funkcionalita je v `custom_components/zse_hdo/` a je v aktivnej distribucii (v1.2.0).
 Primarny zdroj dat je `www.zsdis.sk`, kde su HDO harmonogramy ulozene ako embedded JavaScript polia (`household_rates`, `business_rates`).
 Prezentacna priorita je kvalita dashboardu v HA — samotne nacitanie dat nie je hodnota; hodnota je co uzivatel vidi.
 
@@ -80,8 +80,8 @@ Prezentacna priorita je kvalita dashboardu v HA — samotne nacitanie dat nie je
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Prioritou parsera je presnost dat | Nekorektne hodnoty znizuju doveru a pouzitelnost integracie | Validated v1.1.0 |
-| Prioritou prezentacie su dashboardy v Home Assistant | Koncovy uzivatel hodnotu vidi najma cez dashboard | Validated v1.1.0 (3 entity + EXAMPLES.md recepty) |
+| Prioritou parsera je presnost dat | Nekorektne hodnoty znizuju doveru a pouzitelnost integracie | Validated v1.2.0 |
+| Prioritou prezentacie su dashboardy v Home Assistant | Koncovy uzivatel hodnotu vidi najma cez dashboard | Validated v1.2.0 (4 entity + EXAMPLES.md recepty) |
 | Scraping namiesto API | ZSE/ZSDIS neposkytuje verejne API — embedded JS pole je jediny dostupny zdroj | Accepted; kompenzovane fixture-test plánom (PARS-04) |
 | Dashboard cez externe HACS pluginy, nie vlastna JS karta | Niksi maintenance burden; pluginy uz su zauzivane v komunite | Accepted; pokryte ako "out of scope" pre v1 |
 | Default refresh frequency = `1week` | Harmonogram zdroja sa meni zriedka; setri zataz na `zsdis.sk` | Validated v1.0.5+ |
@@ -105,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-30 — initialized milestone v1.2.0 (CONF-03, VADD-01, VADD-03, release-loop hardening).*
+*Last updated: 2026-04-30 — v1.2.0 released (CONF-03, VADD-01, VADD-03, release-loop hardening delivered).*

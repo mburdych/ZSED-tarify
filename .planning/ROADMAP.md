@@ -1,10 +1,10 @@
 # ROADMAP: ZSE HDO Live Home Assistant Integracia
 
 **Generated:** 2026-04-30
-**Last sync with shipped reality:** 2026-04-30 (v1.1.0) + milestone v1.2.0 planning
+**Last sync with shipped reality:** 2026-04-30 (v1.2.0)
 **Granularity:** fine
 **Total tracked requirements:** 27
-**Coverage:** 27/27 mapped (23 validated, 4 active in v1.2.0)
+**Coverage:** 27/27 mapped (27 validated, 0 active in v1.2.0)
 
 ## Phases
 
@@ -182,4 +182,4 @@ Plans:
 | 11. Release Loop Codification | 1/1 | Implemented v1.2.0 | 2026-04-30 |
 
 ---
-*Last updated: 2026-04-30 — phases 8-11 implemented; release-loop codified via `.planning/RELEASE-CHECKLIST.md`.*
+*Last updated: 2026-04-30 — v1.2.0 released; phases 8-11 validated and release-loop executed.*

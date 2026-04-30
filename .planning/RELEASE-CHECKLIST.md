@@ -16,15 +16,15 @@ Repeatable pre-release loop for `ZSE HDO Live`.
 
 ## 3) Manual HA smoke-test gate
 
-- [ ] Install/update integration in clean HA dev instance
-- [ ] Add integration via UI (`Settings -> Devices & Services`)
-- [ ] Confirm baseline entities render correctly:
+- [x] Install/update integration in clean HA dev instance
+- [x] Add integration via UI (`Settings -> Devices & Services`)
+- [x] Confirm baseline entities render correctly:
   - `binary_sensor.zse_hdo_<N>_tariff`
   - `sensor.zse_hdo_<N>_next_switch`
   - `sensor.zse_hdo_<N>_today_schedule`
   - `sensor.zse_hdo_<N>_low_remaining`
-- [ ] Validate one degraded/failure path markers are visible (`diagnostic_error_*`)
-- [ ] Validate schedule-change marker path (`schedule_changed`, `schedule_change_at`)
+- [x] Validate one degraded/failure path markers are visible (`diagnostic_error_*`)
+- [x] Validate schedule-change marker path (`schedule_changed`, `schedule_change_at`)
 
 ## 4) Docs and examples sync
 
@@ -36,12 +36,12 @@ Repeatable pre-release loop for `ZSE HDO Live`.
 ## 5) Release publish sequence
 
 - [x] Commit release metadata/docs changes
-- [ ] Create and push release tag matching `manifest.json` version
-- [ ] Publish GitHub release notes (same core points as README changelog)
-- [ ] Post-release sanity: fresh install path + one update path still work
+- [x] Create and push release tag matching `manifest.json` version
+- [x] Publish GitHub release notes (same core points as README changelog)
+- [x] Post-release sanity: fresh install path + one update path still work
 
 ## 6) Post-release bookkeeping
 
-- [ ] Update `.planning/ROADMAP.md` and `.planning/STATE.md` with release status
-- [ ] Mark validated requirements for released scope in `.planning/REQUIREMENTS.md`
-- [ ] Capture deferred manual checks in latest phase summary if any
+- [x] Update `.planning/ROADMAP.md` and `.planning/STATE.md` with release status
+- [x] Mark validated requirements for released scope in `.planning/REQUIREMENTS.md`
+- [x] Capture deferred manual checks in latest phase summary if any

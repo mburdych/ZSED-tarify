@@ -1,12 +1,12 @@
 # Requirements: ZSE HDO Live Home Assistant Integracia
 
 **Defined:** 2026-04-29
-**Last sync with shipped reality:** 2026-04-30 (v1.1.0), milestone v1.2.0 scoped
+**Last sync with shipped reality:** 2026-04-30 (v1.2.0)
 **Core Value:** Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `www.zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
 
 ## v1 Requirements
 
-Requirements status: **Validated** = implemented and shipped (v1.1.0), **Active** = in scope for milestone v1.2.0.
+Requirements status: **Validated** = implemented and shipped (v1.2.0), **Active** = pending for future milestone.
 
 ### Parser Correctness
 
@@ -113,4 +113,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-29*
-*Last updated: 2026-04-30 — phase 8-11 delivered and release-loop workflow codified; remaining checks are pre-publish manual gates.*
+*Last updated: 2026-04-30 — v1.2.0 published with phases 8-11 validated and release checklist executed.*
