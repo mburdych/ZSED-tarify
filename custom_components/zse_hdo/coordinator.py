@@ -71,6 +71,8 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         self._diagnostic_error_source = None
         self._diagnostic_error_code = None
         self._diagnostic_error_at = None
+        self._diagnostic_error_severity = None
+        self._diagnostic_error_guidance = None
         self._last_schedule_fingerprint = None
         self._last_schedule_change_at = None
         self._schedule_changed = False
@@ -234,6 +236,8 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         payload["diagnostic_error_at"] = (
             self._diagnostic_error_at.isoformat() if self._diagnostic_error_at else None
         )
+        payload["diagnostic_error_severity"] = self._diagnostic_error_severity
+        payload["diagnostic_error_guidance"] = self._diagnostic_error_guidance
         payload["schedule_changed"] = self._schedule_changed
         payload["schedule_change_at"] = (
             self._last_schedule_change_at.isoformat()
@@ -251,15 +255,35 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
         raw = json.dumps(normalized, sort_keys=True, ensure_ascii=True)
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
-    def _classify_error(self, err: Exception) -> tuple[str, str]:
-        """Map runtime exception to explicit diagnostic source/code."""
+    def _classify_error(self, err: Exception) -> tuple[str, str, str, str]:
+        """Map runtime exception to explicit diagnostic source/code/severity/help."""
         if isinstance(err, ZSEHDOFetchError):
-            return ("fetch", "FETCH_ERROR")
+            return (
+                "fetch",
+                "FETCH_ERROR",
+                "warning",
+                "Skontrolujte internetove pripojenie a dostupnost webu ZSDIS.",
+            )
         if isinstance(err, ZSEHDOParseError):
-            return ("parse", "PARSE_ERROR")
+            return (
+                "parse",
+                "PARSE_ERROR",
+                "error",
+                "Skontrolujte, ci sa nezmenila struktura zdrojovej stranky ZSDIS.",
+            )
         if isinstance(err, ZSEHDOTariffLogicError):
-            return ("tariff_logic", "TARIFF_LOGIC_ERROR")
-        return ("fetch", "UNKNOWN_ERROR")
+            return (
+                "tariff_logic",
+                "TARIFF_LOGIC_ERROR",
+                "error",
+                "Skontrolujte HDO kod a validitu casovych intervalov.",
+            )
+        return (
+            "fetch",
+            "UNKNOWN_ERROR",
+            "error",
+            "Pozrite log integracie pre detail chyby a skuste obnovit entitu.",
+        )
 
     async def _async_update_data(self) -> Dict:
         """Fetch data from ZSE."""
@@ -293,6 +317,8 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             self._diagnostic_error_source = None
             self._diagnostic_error_code = None
             self._diagnostic_error_at = None
+            self._diagnostic_error_severity = None
+            self._diagnostic_error_guidance = None
             new_fingerprint = self._schedule_fingerprint(schedule)
             self._schedule_changed = (
                 self._last_schedule_fingerprint is not None
@@ -311,7 +337,12 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             return payload
 
         except Exception as err:
-            diagnostic_source, diagnostic_code = self._classify_error(err)
+            (
+                diagnostic_source,
+                diagnostic_code,
+                diagnostic_severity,
+                diagnostic_guidance,
+            ) = self._classify_error(err)
             _LOGGER.error(
                 "Error fetching HDO data for %s [%s/%s]: %s",
                 self.hdo_number,
@@ -324,6 +355,8 @@ class ZSEHDOCoordinator(DataUpdateCoordinator):
             self._diagnostic_error_source = diagnostic_source
             self._diagnostic_error_code = diagnostic_code
             self._diagnostic_error_at = now
+            self._diagnostic_error_severity = diagnostic_severity
+            self._diagnostic_error_guidance = diagnostic_guidance
             retry_delay = self._compute_retry_delay()
             self._next_retry_at = now + timedelta(seconds=retry_delay)
             self._schedule_retry_update(self._next_retry_at)

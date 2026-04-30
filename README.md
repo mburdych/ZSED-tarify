@@ -73,6 +73,8 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `next_retry_at`: Čas najbližšieho retry pokusu (ak je naplánovaný)
   - `schedule_changed`: `true/false` či posledný úspešný refresh zistil zmenu harmonogramu
   - `schedule_change_at`: Čas detekcie poslednej zmeny harmonogramu (ak existuje)
+  - `diagnostic_error_severity`: `warning/error` priorita poslednej diagnostickej chyby
+  - `diagnostic_error_guidance`: odporúčaný ďalší krok pre operátora
 
 ### 2. Sensor - Ďalšie prepnutie
 - **Entity ID**: `sensor.zse_hdo_XXX_next_switch`
@@ -82,7 +84,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `to_tariff`: low/high
   - `to_tariff_name`: Nízka/Vysoká
   - `rate_type`: Typ tarify (napr. "D3 Aktiv")
-  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`, `diagnostic_error_severity`, `diagnostic_error_guidance`
 
 ### 3. Sensor - Dnešný rozvrh
 - **Entity ID**: `sensor.zse_hdo_XXX_today_schedule`
@@ -93,7 +95,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `period_count`: Počet období
   - `rate_type`: Typ tarify
   - `category`: household/business
-  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`, `diagnostic_error_severity`, `diagnostic_error_guidance`
 
 ### 4. Helper Sensor - Zostávajúca nízka tarifa
 - **Entity ID**: `sensor.zse_hdo_XXX_low_remaining`
@@ -104,7 +106,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `is_low_tariff_now`: `true/false` či je práve aktívna nízka tarifa
   - `rate_type`: Typ tarify
   - `category`: household/business
-  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`, `schedule_changed`, `schedule_change_at`, `diagnostic_error_severity`, `diagnostic_error_guidance`
 
 ## 🔄 Automatická aktualizácia
 
@@ -226,6 +228,13 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 - Môžete manuálne vyžiadať aktualizáciu cez Developer Tools
 
 ## 📝 Changelog
+
+### v1.2.1 (planned patch)
+**Stabilization + automation pack release:**
+- ✅ STAB-01: low-remaining helper boundary stabilization (sub-minute visibility)
+- ✅ VADD-02: shipped blueprint pack for common HDO automations
+- ✅ DIAG-02: diagnostics payload extended with severity and operator guidance
+- ✅ DOCS-01: docs/planning consistency pass for release prep
 
 ### v1.2.0 (2026-04-30)
 **Operability + value-add release:**

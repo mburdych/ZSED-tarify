@@ -12,15 +12,15 @@ Ciel je dlhodobo stabilny plugin, ktory ostane pouzitelny aj pocas priebeznych z
 
 Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
 
-## Current Milestone: v1.2.0 Operability + Value Add
+## Current Milestone: v1.2.1 Patch + Blueprint Expansion
 
-**Goal:** Dokoncit diagnosticku operabilitu a dorucit najblizsie value-add funkcie bez narusenia stability jadra.
+**Goal:** Dorucit patch stabilizaciu po v1.2.0 a rozsirenie o blueprint balicek automatizacii.
 
 **Target features:**
-- Dokoncit `CONF-03` (jednoznacne oddelenie fetch/parse/tariff chyb v logoch)
-- Pridat `VADD-01` helper entity pre remaining low-tariff window
-- Pridat `VADD-03` notifikacny signal pri zmene harmonogramu
-- Zaviest opakovatelny release-checkpoint workflow pre kazdy dalsi release
+- Dorucit `VADD-02` (blueprint balicek pre bezne automacie)
+- Stabilizacne patch fixy po release `v1.2.0` (edge-case + regression cleanup)
+- Diagnosticky polish nad ramec `CONF-03` (operator readability)
+- Docs cleanup a release-ready sync pre patch cadence
 
 ## Requirements
 
@@ -46,10 +46,10 @@ Implementovane a overene v aktualne distribuovanej verzii **v1.2.0**:
 
 Nedostatky, ktore zostavaju otvorene v roadmap-e:
 
-- [ ] **CONF-03** — diagnostika musi v logoch jednoznacne odlisit fetch / parse / tariff-logic chyby.
-- [ ] **VADD-01** — helper entita pre zostavajuci cas do konca aktualneho low-tariff okna.
-- [ ] **VADD-03** — detekcia zmeny harmonogramu + event/flag pre naviazanie notifikacii.
-- [ ] **RELEASE-LOOP-01** — release checkpoint workflow ako povinna opakovatelna cadence pri kazdom dalsom release.
+- [x] **VADD-02** — pripraveny blueprint balicek pre bezne automatizacie je implementovany (release pending).
+- [x] **STAB-01** — patch stabilizacia po v1.2.0 je implementovana bez zmeny contract surface (release pending).
+- [x] **DIAG-02** — diagnosticke hlasky/metadate doplnene o severity + guidance (release pending).
+- [x] **DOCS-01** — docs cleanup a consistency pass po v1.2.0 je hotovy (release pending).
 
 ### Out of Scope
 
@@ -105,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-30 — v1.2.0 released (CONF-03, VADD-01, VADD-03, release-loop hardening delivered).*
+*Last updated: 2026-04-30 — milestone v1.2.1 implementation completed, release prep in progress.*

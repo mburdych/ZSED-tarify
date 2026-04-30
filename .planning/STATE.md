@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2.0
-milestone_name: operability-value-add
-status: v1.2.0 released
-last_updated: "2026-04-30T15:40:00.000Z"
+milestone: v1.2.1
+milestone_name: patch-blueprint-expansion
+status: Milestone implementation complete — release pending
+last_updated: "2026-04-30T15:59:00.000Z"
 progress:
-  total_phases: 11
-  completed_phases: 11
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 15
+  completed_phases: 15
+  total_plans: 15
+  completed_plans: 15
   percent: 100
 ---
 
@@ -17,22 +17,22 @@ progress:
 ## Project Reference
 
 - **Core value**: Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
-- **Current focus**: v1.2.0 je publikovane; dalsi krok je pripravit scope pre dalsiu milestone.
+- **Current focus**: Release prep pre milestone v1.2.1 (all implementation phases completed).
 
 ## Current Position
 
-Phase: 11 (release-loop-codification) — IMPLEMENTED
-Plan: 11-01
+Phase: 15 (docs-hygiene-release-prep) — COMPLETED
+Plan: 15-01-PLAN.md
 
-- **Current phase**: Phase 11 (RELEASE-LOOP-01)
-- **Current plan**: Completed (`11-01`)
-- **Status**: Release completed
-- **Progress**: 11/11 phases implemented
+- **Current phase**: Phase 15 (DOCS-01)
+- **Current plan**: 15-01-PLAN.md completed
+- **Status**: Implementation complete, release pending
+- **Progress**: 15/15 phases done
 
 ## Performance Metrics
 
-- **tracked requirements total**: 27
-- **Mapped to roadmap phases**: 27
+- **tracked requirements total**: 31
+- **Mapped to roadmap phases**: 31
 - **Coverage**: 100%
 - **Open blockers**: 0
 
@@ -42,15 +42,15 @@ Plan: 11-01
 
 - Roadmap je brownfield-first: uz validovane capability ostali zachovane a otvorene su len realne medzery.
 - v1.1.0 uzatvorilo TZ-01, CODE-01, PARS-04, RELI-03 a RELI-04.
-- v1.2.0 scope (CONF-03, VADD-01, VADD-03, RELEASE-LOOP-01) je implementacne doruceny.
-- Release loop je kodifikovany v `.planning/RELEASE-CHECKLIST.md`.
-- Manual HA release gates boli uspesne vykonane pred publikaciou.
+- v1.2.0 je uzavrete ako shipped baseline.
+- v1.2.1 scope: VADD-02 + STAB-01 + DIAG-02 + DOCS-01.
+- v1.2.1 phase chain (12->15) je implementacne uzavrety.
 
 ### TODO
 
-- Pripravit nasledujucu milestone scope (v1.2.x alebo v1.3.0).
-- Rozhodnut o aktivacii `VADD-02` (blueprint balicek) v dalsom cykle.
-- Priebezně udrziavat release checklist pri patch releasoch.
+- Spustit release loop checkpoint podla `.planning/RELEASE-CHECKLIST.md`.
+- Dokoncit manual HA smoke gate pre patch release.
+- Bumpnut `manifest.json` verziu pri finalnom release kroku.
 
 ### Blockers
 
@@ -58,8 +58,8 @@ Plan: 11-01
 
 ## Session Continuity
 
-- **Last completed action**: v1.2.0 release publish (tag + release notes) a post-release sanity.
-- **Next recommended command**: `/gsd-new-milestone`
-- **Handoff note**: Milestone v1.2.0 je uzavreta; checklist je splneny.
+- **Last completed action**: Implementacne uzavretie phases 12-15 pre v1.2.1.
+- **Next recommended command**: `/gsd-progress` alebo release checklist execution
+- **Handoff note**: Kod aj dokumentacia su pripravené na patch release gate.
 
-**Planned Phase:** 11 (release-loop-codification) — completed — 2026-04-30T15:35:00.000Z
+**Planned Phase:** Release checkpoint (manual gates + tag/release publish) — pending — 2026-04-30T15:59:00.000Z

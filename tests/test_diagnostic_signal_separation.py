@@ -212,6 +212,9 @@ async def test_error_source_classification_on_cached_fallback(error_cls_name, ex
     assert payload["diagnostic_error_source"] == expected_source
     assert payload["diagnostic_error_code"] is not None
     assert payload["diagnostic_error_at"] == now.isoformat()
+    assert payload["diagnostic_error_severity"] in {"warning", "error"}
+    assert isinstance(payload["diagnostic_error_guidance"], str)
+    assert payload["diagnostic_error_guidance"] != ""
 
 
 def test_sensor_entities_project_diagnostic_markers():
@@ -230,6 +233,8 @@ def test_sensor_entities_project_diagnostic_markers():
         "diagnostic_error_source": "parse",
         "diagnostic_error_code": "PARSE_ERROR",
         "diagnostic_error_at": "2026-04-30T11:59:00+00:00",
+        "diagnostic_error_severity": "error",
+        "diagnostic_error_guidance": "Skontrolujte parser.",
     }
     coordinator = types.SimpleNamespace(data=payload)
     entry = types.SimpleNamespace(entry_id="entry-1")
@@ -244,3 +249,5 @@ def test_sensor_entities_project_diagnostic_markers():
         assert attrs["diagnostic_error_source"] == "parse"
         assert attrs["diagnostic_error_code"] == "PARSE_ERROR"
         assert attrs["diagnostic_error_at"] == "2026-04-30T11:59:00+00:00"
+        assert attrs["diagnostic_error_severity"] == "error"
+        assert attrs["diagnostic_error_guidance"] == "Skontrolujte parser."

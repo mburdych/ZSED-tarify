@@ -1,12 +1,12 @@
 # Requirements: ZSE HDO Live Home Assistant Integracia
 
 **Defined:** 2026-04-29
-**Last sync with shipped reality:** 2026-04-30 (v1.2.0)
+**Last sync with shipped reality:** 2026-04-30 (v1.2.0), v1.2.1 implementation completed (release pending)
 **Core Value:** Stabilna a spolahliva integracia, ktora korektne cita harmonogram zo `www.zsdis.sk` a zrozumitelne ho prezentuje na Home Assistant dashboarde.
 
 ## v1 Requirements
 
-Requirements status: **Validated** = implemented and shipped (v1.2.0), **Active** = pending for future milestone.
+Requirements status: **Validated** = implemented and shipped (v1.2.0), **Implemented** = completed for next patch release.
 
 ### Parser Correctness
 
@@ -57,8 +57,20 @@ Deferred to future release. Tracked but not in current roadmap.
 ### Value Add
 
 - **VADD-01** *(implemented v1.2.0)*: Integracia ponukne helper entitu pre remaining low-tariff window.
-- **VADD-02**: Integracia ponukne pripraveny blueprint balicek pre bezne automatizacie.
+- **VADD-02** *(implemented v1.2.1, release pending)*: Integracia ponukne pripraveny blueprint balicek pre bezne automatizacie.
 - **VADD-03** *(implemented v1.2.0)*: Integracia podpori notifikacie pri zmenach harmonogramu na zdroji.
+
+### Patch Stabilization *(nova kategoria pre v1.2.1)*
+
+- [x] **STAB-01** *(implemented v1.2.1, release pending)*: Patch stabilizacia po v1.2.0 odstrani zname edge-case regresie bez rozbitia entity/API kontraktu.
+
+### Diagnostics Polish *(nova kategoria pre v1.2.1)*
+
+- [x] **DIAG-02** *(implemented v1.2.1, release pending)*: Diagnostika doplni operator-friendly guidance text a severity marker pre rychlejsie riesenie incidentov.
+
+### Docs Hygiene *(nova kategoria pre v1.2.1)*
+
+- [x] **DOCS-01** *(implemented v1.2.1, release pending)*: README/EXAMPLES/planning dokumenty su po patch releasi konzistentne a bez zastaranych referencii.
 
 ## Out of Scope
 
@@ -102,8 +114,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RELEASE-04 | Phase 7 | Validated for v1.1.0 |
 | RELEASE-LOOP-01 | Phase 11 | Implemented (v1.2.0) |
 | VADD-01 | Phase 9 | Implemented (v1.2.0) |
-| VADD-02 | Future | Deferred |
+| VADD-02 | Phase 13 | Implemented (v1.2.1, release pending) |
 | VADD-03 | Phase 10 | Implemented (v1.2.0) |
+| STAB-01 | Phase 12 | Implemented (v1.2.1, release pending) |
+| DIAG-02 | Phase 14 | Implemented (v1.2.1, release pending) |
+| DOCS-01 | Phase 15 | Implemented (v1.2.1, release pending) |
 
 **Coverage:**
 - v1 requirements: 23 total (17 original + 2 newly captured + 4 release-readiness)
@@ -113,4 +128,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-29*
-*Last updated: 2026-04-30 — v1.2.0 published with phases 8-11 validated and release checklist executed.*
+*Last updated: 2026-04-30 — v1.2.1 implementation completed for STAB-01, VADD-02, DIAG-02, DOCS-01 (release pending).*

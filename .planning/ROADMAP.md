@@ -1,10 +1,10 @@
 # ROADMAP: ZSE HDO Live Home Assistant Integracia
 
 **Generated:** 2026-04-30
-**Last sync with shipped reality:** 2026-04-30 (v1.2.0)
+**Last sync with shipped reality:** 2026-04-30 (v1.2.0), v1.2.1 implementation completed (release pending)
 **Granularity:** fine
 **Total tracked requirements:** 27
-**Coverage:** 27/27 mapped (27 validated, 0 active in v1.2.0)
+**Coverage:** 31/31 mapped (27 validated, 4 implemented for v1.2.1 patch)
 
 ## Phases
 
@@ -19,6 +19,10 @@
 - [x] **Phase 9: Remaining Low Tariff Helper Entity** *(implemented v1.2.0)* — VADD-01 dorucene: helper entita pre zostavajuci low-tariff window.
 - [x] **Phase 10: Schedule Change Notification Hooks** *(implemented v1.2.0)* — VADD-03 dorucene: signalizacia zmen harmonogramu + docs automation hook.
 - [x] **Phase 11: Release Loop Codification** *(implemented v1.2.0)* — RELEASE-LOOP-01 dorucene: opakovatelny release checklist workflow.
+- [x] **Phase 12: Patch Stabilization Sweep** *(implemented v1.2.1, release pending)* — STAB-01: stabilizacny patch pass nad v1.2.0 edge-case regresiami.
+- [x] **Phase 13: Automation Blueprint Pack** *(implemented v1.2.1, release pending)* — VADD-02: dorucenie blueprint balicka pre bezne HDO automacie.
+- [x] **Phase 14: Diagnostics UX Polish** *(implemented v1.2.1, release pending)* — DIAG-02: operator-friendly diagnostika (severity + guidance text).
+- [x] **Phase 15: Docs Hygiene & Patch Release Prep** *(implemented v1.2.1, release pending)* — DOCS-01: docs cleanup, consistency pass, patch-release priprava.
 
 ## Phase Details
 
@@ -165,6 +169,54 @@ Plans:
 **Plans**:
 - [x] 11-01-PLAN.md — Release loop codification into repeatable checklist workflow.
 
+### Phase 12: Patch Stabilization Sweep
+**Goal**: Stabilizovat patch regresie po v1.2.0 bez zmeny externeho entity contractu.
+**Depends on**: Phase 11
+**Requirements**: STAB-01
+**Status**: **Implemented v1.2.1 (release pending)**.
+**Success Criteria** (what must be TRUE):
+1. Identifikovane edge-case bugy su opravene bez narusenia existujucich test kontraktov.
+2. Full regression suite ostava zelena po patch fixoch.
+3. Ziadna zmena stable entity IDs/attribute contract surface.
+**Plans**:
+- [x] 12-01-PLAN.md — Stabilization sweep for low-remaining boundary behavior.
+
+### Phase 13: Automation Blueprint Pack
+**Goal**: Dodat pripraveny blueprint balicek pre bezne user flows (bojler, reminder, tariff notifications).
+**Depends on**: Phase 12
+**Requirements**: VADD-02
+**Status**: **Implemented v1.2.1 (release pending)**.
+**Success Criteria** (what must be TRUE):
+1. Blueprint-y su importovatelne v HA bez manualnych fixov.
+2. Pokryte su aspon 2-3 najbeznejsie HDO automation scenare.
+3. Dokumentacia obsahuje jednoduche kroky pre pouzitie blueprintov.
+**Plans**:
+- [x] 13-01-PLAN.md — Blueprint pack for common HDO user flows.
+
+### Phase 14: Diagnostics UX Polish
+**Goal**: Zvysit citatelnost diagnostiky pre operatorov cez severity a guidance text.
+**Depends on**: Phase 12
+**Requirements**: DIAG-02
+**Status**: **Implemented v1.2.1 (release pending)**.
+**Success Criteria** (what must be TRUE):
+1. Diagnosticke payloady obsahuje severity marker pre jednoduche triage.
+2. Guidance text navadza na dalsi krok pri beznych incidentoch.
+3. Testy overuju pritomnost novych diagnostickych poli.
+**Plans**:
+- [x] 14-01-PLAN.md — Diagnostics severity/guidance payload polish.
+
+### Phase 15: Docs Hygiene & Patch Release Prep
+**Goal**: Pred patch releasom zabezpecit uplnu konzistenciu docs/planning artefaktov.
+**Depends on**: Phase 13, Phase 14
+**Requirements**: DOCS-01
+**Status**: **Implemented v1.2.1 (release pending)**.
+**Success Criteria** (what must be TRUE):
+1. README/EXAMPLES/planning subory su bez driftu a zastaranych referencii.
+2. Changelog a release checklist odzrkadluju realny scope patch releasu.
+3. Projekt je pripraveny na patch publish bez ad-hoc docs doplnkov.
+**Plans**:
+- [x] 15-01-PLAN.md — Milestone docs hygiene + release prep sync.
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -180,6 +232,10 @@ Plans:
 | 9. Remaining Low Tariff Helper Entity | 1/1 | Implemented v1.2.0 | 2026-04-30 |
 | 10. Schedule Change Notification Hooks | 1/1 | Implemented v1.2.0 | 2026-04-30 |
 | 11. Release Loop Codification | 1/1 | Implemented v1.2.0 | 2026-04-30 |
+| 12. Patch Stabilization Sweep | 1/1 | Implemented v1.2.1 (release pending) | 2026-04-30 |
+| 13. Automation Blueprint Pack | 1/1 | Implemented v1.2.1 (release pending) | 2026-04-30 |
+| 14. Diagnostics UX Polish | 1/1 | Implemented v1.2.1 (release pending) | 2026-04-30 |
+| 15. Docs Hygiene & Patch Release Prep | 1/1 | Implemented v1.2.1 (release pending) | 2026-04-30 |
 
 ---
-*Last updated: 2026-04-30 — v1.2.0 released; phases 8-11 validated and release-loop executed.*
+*Last updated: 2026-04-30 — v1.2.1 phases 12-15 implemented; release pending checklist execution.*
