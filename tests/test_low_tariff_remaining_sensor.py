@@ -150,3 +150,12 @@ def test_weekend_schedule_branch_used():
         ),
     )
     assert entity.native_value == 45
+
+
+def test_subminute_remaining_stays_visible_as_one_minute():
+    now = datetime(2026, 4, 30, 12, 59, 30, tzinfo=timezone.utc)
+    entity = _entity(now, _payload([{"start": "12:00", "end": "13:00", "tariff": "low"}]))
+    assert entity.native_value == 1
+    attrs = entity.extra_state_attributes
+    assert attrs["remaining_minutes"] == 1
+    assert attrs["is_low_tariff_now"] is True

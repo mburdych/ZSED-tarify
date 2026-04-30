@@ -11,6 +11,7 @@ License: MIT
 """
 
 import logging
+import math
 from datetime import timedelta
 from typing import Any, Dict, Optional
 
@@ -217,12 +218,11 @@ class ZSEHDOLowRemainingSensor(CoordinatorEntity, SensorEntity):
         self._attr_icon = "mdi:timer-sand"
         self._attr_native_unit_of_measurement = "min"
 
-    def _active_low_period_end(self) -> Optional[Any]:
+    def _active_low_period_end(self, now: Any) -> Optional[Any]:
         """Return end datetime for current low-tariff period."""
         if not self.coordinator.data:
             return None
 
-        now = dt_util.now()
         if not is_low_tariff(self.coordinator.data, now=now):
             return None
 
@@ -260,19 +260,34 @@ class ZSEHDOLowRemainingSensor(CoordinatorEntity, SensorEntity):
                 microsecond=0,
             )
             if end_time < start_time and current_time >= start_time:
-                end_dt = end_dt.replace(day=end_dt.day) + timedelta(days=1)
+                end_dt = end_dt + timedelta(days=1)
             return end_dt
 
         return None
 
+    def _remaining_context(self) -> Dict[str, Any]:
+        """Compute remaining time context once per read."""
+        if not self.coordinator.data:
+            return {"remaining_minutes": 0, "period_end": None, "is_low_tariff_now": False}
+
+        now = dt_util.now()
+        period_end = self._active_low_period_end(now)
+        if not period_end:
+            return {"remaining_minutes": 0, "period_end": None, "is_low_tariff_now": False}
+
+        remaining_seconds = max(0, int((period_end - now).total_seconds()))
+        # Round up to keep active low-period visible even in final seconds.
+        remaining_minutes = math.ceil(remaining_seconds / 60) if remaining_seconds > 0 else 0
+        return {
+            "remaining_minutes": remaining_minutes,
+            "period_end": period_end,
+            "is_low_tariff_now": True,
+        }
+
     @property
     def native_value(self) -> int:
         """Return remaining low-tariff minutes (0 if inactive)."""
-        period_end = self._active_low_period_end()
-        if not period_end:
-            return 0
-        remaining_seconds = int((period_end - dt_util.now()).total_seconds())
-        return max(0, remaining_seconds // 60)
+        return int(self._remaining_context()["remaining_minutes"])
 
     @property
     def extra_state_attributes(self) -> Dict[str, Any]:
@@ -280,11 +295,12 @@ class ZSEHDOLowRemainingSensor(CoordinatorEntity, SensorEntity):
         if not self.coordinator.data:
             return {}
 
-        period_end = self._active_low_period_end()
+        context = self._remaining_context()
+        period_end = context["period_end"]
         return {
-            "remaining_minutes": self.native_value,
+            "remaining_minutes": context["remaining_minutes"],
             "period_end": period_end.isoformat() if period_end else None,
-            "is_low_tariff_now": self.native_value > 0,
+            "is_low_tariff_now": context["is_low_tariff_now"],
             "rate_type": self.coordinator.data.get("rate_type", "Unknown"),
             "category": self.coordinator.data.get("category"),
             **_reliability_attrs(self.coordinator.data),
