@@ -9,6 +9,7 @@
 - ✅ **Binary sensor** - aktuálna tarifa (ON = nízka, OFF = vysoká)
 - ✅ **Sensor** - čas najbližšieho prepnutia
 - ✅ **Sensor** - dnešný rozvrh nízkych taríf
+- ✅ **Helper sensor** - zostávajúce minúty aktuálnej nízkej tarify
 - ✅ **Podpora všetkých 44 HDO** čísel (domácnosti aj firmy)
 - ✅ **Automatické rozlíšenie** víkend/pracovný deň
 
@@ -92,6 +93,17 @@ Po konfigurácii sa vytvoria nasledujúce entity:
   - `category`: household/business
   - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
 
+### 4. Helper Sensor - Zostávajúca nízka tarifa
+- **Entity ID**: `sensor.zse_hdo_XXX_low_remaining`
+- **Stav**: Zostávajúce minúty v aktuálnom low-tariff okne (`0` mimo nízkej tarify)
+- **Atribúty**:
+  - `remaining_minutes`: Rovnaká hodnota ako stav (minúty)
+  - `period_end`: ISO datetime konca aktuálneho low okna (alebo `null`)
+  - `is_low_tariff_now`: `true/false` či je práve aktívna nízka tarifa
+  - `rate_type`: Typ tarify
+  - `category`: household/business
+  - `is_stale`, `stale_for_s`, `consecutive_failures`, `last_success_at`, `last_error_at`, `next_retry_at`
+
 ## 🔄 Automatická aktualizácia
 
 - Integrácia **automaticky sťahuje** aktuálne dáta z www.zsdis.sk
@@ -112,6 +124,7 @@ entities:
   - entity: binary_sensor.zse_hdo_145_tariff
   - entity: sensor.zse_hdo_145_next_switch
   - entity: sensor.zse_hdo_145_today_schedule
+  - entity: sensor.zse_hdo_145_low_remaining
 ```
 
 Pokročilé vizuály (Mushroom/card-mod) sú voliteľné a sú uvedené v `EXAMPLES.md`.
@@ -159,6 +172,8 @@ entities:
     name: Ďalšie prepnutie
   - entity: sensor.zse_hdo_145_today_schedule
     name: Dnes období
+  - entity: sensor.zse_hdo_145_low_remaining
+    name: Zostáva nízka tarifa (min)
 ```
 
 ## 🏷️ Podporované HDO čísla

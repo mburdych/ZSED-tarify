@@ -123,6 +123,7 @@ def _build_entities():
         module.ZSEHDOTariffSensor(coordinator, entry, hdo_number),
         module.ZSEHDONextSwitchSensor(coordinator, entry, hdo_number),
         module.ZSEHDOTodayScheduleSensor(coordinator, entry, hdo_number),
+        module.ZSEHDOLowRemainingSensor(coordinator, entry, hdo_number),
     ]
 
 
@@ -161,6 +162,14 @@ def _extract_required_attrs_from_readme():
             "category",
         }
         | reliability,
+        "sensor.zse_hdo_145_low_remaining": {
+            "remaining_minutes",
+            "period_end",
+            "is_low_tariff_now",
+            "rate_type",
+            "category",
+        }
+        | reliability,
     }
 
 
@@ -172,6 +181,7 @@ def _extract_state_attr_usage_from_examples():
         "binary_sensor.zse_hdo_145_tariff": set(),
         "sensor.zse_hdo_145_next_switch": set(),
         "sensor.zse_hdo_145_today_schedule": set(),
+        "sensor.zse_hdo_145_low_remaining": set(),
     }
     for entity_id, attr in matches:
         if entity_id in by_entity:
@@ -181,10 +191,11 @@ def _extract_state_attr_usage_from_examples():
 
 def test_three_entities_surface():
     entities = _build_entities()
-    assert len(entities) == 3
+    assert len(entities) == 4
     assert sum(1 for entity in entities if entity.__class__.__name__.endswith("TariffSensor")) == 1
     assert sum(1 for entity in entities if entity.__class__.__name__.endswith("NextSwitchSensor")) == 1
     assert sum(1 for entity in entities if entity.__class__.__name__.endswith("TodayScheduleSensor")) == 1
+    assert sum(1 for entity in entities if entity.__class__.__name__.endswith("LowRemainingSensor")) == 1
 
 
 def test_unique_id_contract():
@@ -194,6 +205,7 @@ def test_unique_id_contract():
         "zse_hdo_145_tariff",
         "zse_hdo_145_next_switch",
         "zse_hdo_145_today_schedule",
+        "zse_hdo_145_low_remaining",
     }
 
 
@@ -219,6 +231,9 @@ def test_required_attribute_keys_contract():
     assert {"periods", "period_count"}.issubset(
         by_unique_id["zse_hdo_145_today_schedule"].keys()
     )
+    assert {"remaining_minutes", "period_end", "is_low_tariff_now"}.issubset(
+        by_unique_id["zse_hdo_145_low_remaining"].keys()
+    )
 
     for attrs in by_unique_id.values():
         assert reliability_keys.issubset(attrs.keys())
@@ -230,6 +245,7 @@ def test_docs_examples_attribute_parity():
         "binary_sensor.zse_hdo_145_tariff": entities[0].extra_state_attributes,
         "sensor.zse_hdo_145_next_switch": entities[1].extra_state_attributes,
         "sensor.zse_hdo_145_today_schedule": entities[2].extra_state_attributes,
+        "sensor.zse_hdo_145_low_remaining": entities[3].extra_state_attributes,
     }
 
     docs_required = _extract_required_attrs_from_readme()

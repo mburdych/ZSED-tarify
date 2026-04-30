@@ -15,6 +15,8 @@ entities:
     name: "Ďalšie prepnutie"
   - entity: sensor.zse_hdo_145_today_schedule
     name: "Počet období dnes"
+  - entity: sensor.zse_hdo_145_low_remaining
+    name: "Zostáva nízka tarifa (min)"
 ```
 
 ### 2. Mushroom Card (odporúčané)
@@ -72,6 +74,14 @@ cards:
       ({{ state_attr('sensor.zse_hdo_145_today_schedule', 'day_type') }})
     icon: mdi:calendar-today
     icon_color: orange
+
+  - type: custom:mushroom-template-card
+    primary: "Zostávajúca nízka tarifa"
+    secondary: |
+      {{ states('sensor.zse_hdo_145_low_remaining') }} min
+      (do: {{ state_attr('sensor.zse_hdo_145_low_remaining', 'period_end') }})
+    icon: mdi:timer-sand
+    icon_color: teal
 ```
 
 ### 4. Pokročilá karta s dynamickým timeline (Advanced)
@@ -212,6 +222,7 @@ card_mod:
 
 **Poznámka k entitám:**
 Táto karta používa entity `binary_sensor.zse_hdo_145_tariff`, `sensor.zse_hdo_145_next_switch` a `sensor.zse_hdo_145_today_schedule`. Ak máte iné ID (napr. vlastné prefixy), upravte ich podľa vašej konfigurácie.
+Odporúčaná baseline teraz zahŕňa aj `sensor.zse_hdo_145_low_remaining`.
 
 ## 🤖 Automation Examples
 

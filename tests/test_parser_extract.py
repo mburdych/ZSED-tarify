@@ -7,7 +7,7 @@ import sys
 import pytest
 
 
-def _load_parser_class():
+def _load_parser_module():
     parser_path = Path(__file__).parents[1] / "custom_components" / "zse_hdo" / "parser.py"
     parser_dir = str(parser_path.parent)
     if parser_dir not in sys.path:
@@ -16,7 +16,7 @@ def _load_parser_class():
     module = module_from_spec(spec)
     assert spec and spec.loader
     spec.loader.exec_module(module)
-    return module.ZSEHDOLiveParser
+    return module
 
 
 @pytest.mark.parametrize(
@@ -29,7 +29,7 @@ def _load_parser_class():
 def test_extract_javascript_array_parses_known_arrays(
     standard_parser_html, var_name, expected_count
 ):
-    parser = _load_parser_class()()
+    parser = _load_parser_module().ZSEHDOLiveParser()
 
     data = parser._extract_javascript_array(standard_parser_html, var_name)
 
@@ -44,12 +44,12 @@ def test_extract_javascript_array_parses_known_arrays(
         ("malformed_js_array.html", "household_rates"),
     ],
 )
-def test_extract_javascript_array_returns_empty_on_invalid_input(
+def test_extract_javascript_array_raises_on_invalid_input(
     parser_fixture_loader, fixture_name, var_name
 ):
-    parser = _load_parser_class()()
+    module = _load_parser_module()
+    parser = module.ZSEHDOLiveParser()
     html = parser_fixture_loader(fixture_name)
 
-    data = parser._extract_javascript_array(html, var_name)
-
-    assert data == []
+    with pytest.raises(module.ZSEHDOParseError):
+        parser._extract_javascript_array(html, var_name)

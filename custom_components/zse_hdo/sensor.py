@@ -11,6 +11,7 @@ License: MIT
 """
 
 import logging
+from datetime import timedelta
 from typing import Any, Dict, Optional
 
 from homeassistant.components.binary_sensor import (
@@ -58,6 +59,7 @@ async def async_setup_entry(
         ZSEHDOTariffSensor(coordinator, entry, hdo_number),
         ZSEHDONextSwitchSensor(coordinator, entry, hdo_number),
         ZSEHDOTodayScheduleSensor(coordinator, entry, hdo_number),
+        ZSEHDOLowRemainingSensor(coordinator, entry, hdo_number),
     ]
     
     async_add_entities(entities)
@@ -194,6 +196,93 @@ class ZSEHDOTodayScheduleSensor(CoordinatorEntity, SensorEntity):
             "day_type": "Víkend" if is_weekend else "Pracovný deň",
             "periods": periods,
             "period_count": len(periods),
+            "rate_type": self.coordinator.data.get("rate_type", "Unknown"),
+            "category": self.coordinator.data.get("category"),
+            **_reliability_attrs(self.coordinator.data),
+        }
+
+
+class ZSEHDOLowRemainingSensor(CoordinatorEntity, SensorEntity):
+    """Helper sensor with remaining minutes in active low-tariff window."""
+
+    def __init__(self, coordinator, entry: ConfigEntry, hdo_number: int):
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self._entry = entry
+        self._hdo_number = hdo_number
+        self._attr_unique_id = f"zse_hdo_{hdo_number}_low_remaining"
+        self._attr_name = f"ZSE HDO {hdo_number} Zostavajuca nizka tarifa"
+        self._attr_icon = "mdi:timer-sand"
+        self._attr_native_unit_of_measurement = "min"
+
+    def _active_low_period_end(self) -> Optional[Any]:
+        """Return end datetime for current low-tariff period."""
+        if not self.coordinator.data:
+            return None
+
+        now = dt_util.now()
+        if not is_low_tariff(self.coordinator.data, now=now):
+            return None
+
+        current_time = now.time()
+        periods = get_periods_for_datetime(self.coordinator.data, now)
+        for period in periods:
+            start_str = period.get("start")
+            end_str = period.get("end")
+            if not start_str or not end_str:
+                continue
+            try:
+                start_hour, start_minute = map(int, start_str.split(":"))
+                end_hour, end_minute = map(int, end_str.split(":"))
+            except (TypeError, ValueError):
+                continue
+
+            start_time = now.replace(
+                hour=start_hour, minute=start_minute, second=0, microsecond=0
+            ).time()
+            end_time = now.replace(
+                hour=end_hour, minute=end_minute, second=0, microsecond=0
+            ).time()
+            in_period = (
+                current_time >= start_time or current_time < end_time
+                if end_time < start_time
+                else start_time <= current_time < end_time
+            )
+            if not in_period:
+                continue
+
+            end_dt = now.replace(
+                hour=end_hour,
+                minute=end_minute,
+                second=0,
+                microsecond=0,
+            )
+            if end_time < start_time and current_time >= start_time:
+                end_dt = end_dt.replace(day=end_dt.day) + timedelta(days=1)
+            return end_dt
+
+        return None
+
+    @property
+    def native_value(self) -> int:
+        """Return remaining low-tariff minutes (0 if inactive)."""
+        period_end = self._active_low_period_end()
+        if not period_end:
+            return 0
+        remaining_seconds = int((period_end - dt_util.now()).total_seconds())
+        return max(0, remaining_seconds // 60)
+
+    @property
+    def extra_state_attributes(self) -> Dict[str, Any]:
+        """Return helper context attributes."""
+        if not self.coordinator.data:
+            return {}
+
+        period_end = self._active_low_period_end()
+        return {
+            "remaining_minutes": self.native_value,
+            "period_end": period_end.isoformat() if period_end else None,
+            "is_low_tariff_now": self.native_value > 0,
             "rate_type": self.coordinator.data.get("rate_type", "Unknown"),
             "category": self.coordinator.data.get("category"),
             **_reliability_attrs(self.coordinator.data),
