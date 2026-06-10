@@ -62,6 +62,8 @@ coordinator = DataUpdateCoordinator(
 )
 ```
 
+Od **v1.2.2** sa tarifné entity (tarifa, next_switch, dnešný rozvrh, zostávajúca nízka) aktualizujú aj **na hraniciach tarify** cez `async_track_point_in_time`, takže dashboard a automatizácie fungujú správne aj pri dlhom intervale sťahovania rozvrhu (napr. 1 týždeň).
+
 ### 3. 📊 Tri Typy Senzorov
 
 #### a) Binary Sensor - Aktuálna tarifa

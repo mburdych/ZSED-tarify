@@ -224,6 +224,16 @@ card_mod:
 Táto karta používa entity `binary_sensor.zse_hdo_145_tariff`, `sensor.zse_hdo_145_next_switch` a `sensor.zse_hdo_145_today_schedule`. Ak máte iné ID (napr. vlastné prefixy), upravte ich podľa vašej konfigurácie.
 Odporúčaná baseline teraz zahŕňa aj `sensor.zse_hdo_145_low_remaining`.
 
+**Poznámka k času prepnutia (od v1.2.2):**
+Integrácia sama aktualizuje `next_switch` na každej tarifnej hranici. Pre vlastné template senzory (napr. „Ďalšia lacná“) odporúčame počítať relatívny čas živo:
+
+```yaml
+{% set ts = as_timestamp(states('sensor.zse_hdo_145_next_switch')) %}
+{% set diff = ts - as_timestamp(now()) %}
+{{ state_attr('sensor.zse_hdo_145_next_switch', 'time') }}
+{% if diff > 0 %}(o {{ (diff // 3600) | int }}h {{ ((diff % 3600) // 60) | int }}min){% endif %}
+```
+
 ## 🤖 Automation Examples
 
 ### Blueprint pack (odporúčané pre rýchly štart)

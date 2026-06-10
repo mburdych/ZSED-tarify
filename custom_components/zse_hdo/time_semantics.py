@@ -142,3 +142,19 @@ def calculate_next_switch(
         }
 
     return None
+
+
+def get_next_future_switch(
+    schedule: Dict[str, List[Dict[str, Any]]], now: Optional[datetime] = None
+) -> Optional[Dict[str, Any]]:
+    """Return the next tariff switch strictly in the future relative to `now`."""
+    now_dt = now or dt_util.now()
+    probe = now_dt
+    for _ in range(20):
+        candidate = calculate_next_switch(schedule, now=probe)
+        if not candidate:
+            return None
+        if candidate["datetime"] > now_dt:
+            return candidate
+        probe = candidate["datetime"] + timedelta(seconds=1)
+    return None

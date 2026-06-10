@@ -13,7 +13,7 @@ License: MIT
 import logging
 import math
 from datetime import timedelta
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
@@ -23,13 +23,88 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.event import async_track_point_in_time
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
-from .time_semantics import calculate_next_switch, get_periods_for_datetime, is_low_tariff
+from .time_semantics import (
+    get_next_future_switch,
+    get_periods_for_datetime,
+    is_low_tariff,
+)
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class ZSEBoundaryEntityMixin:
+    """Refresh entity state at tariff/time boundaries, not only on coordinator poll."""
+
+    _boundary_unsub: Optional[Callable[[], None]] = None
+
+    def _boundary_update_at(self) -> Optional[Any]:
+        """Return the next wall-clock moment when HA state should be re-published."""
+        raise NotImplementedError
+
+    async def async_added_to_hass(self) -> None:
+        """Arm boundary refresh when entity is registered."""
+        await super().async_added_to_hass()
+        self._schedule_boundary_refresh()
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Cancel pending boundary refresh on unload."""
+        self._cancel_boundary_refresh()
+        await super().async_will_remove_from_hass()
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Re-arm boundary timer and publish fresh state after coordinator refresh."""
+        self._schedule_boundary_refresh()
+        self.async_write_ha_state()
+
+    def _cancel_boundary_refresh(self) -> None:
+        """Cancel any pending boundary timer."""
+        if self._boundary_unsub:
+            self._boundary_unsub()
+            self._boundary_unsub = None
+
+    @callback
+    def _schedule_boundary_refresh(self) -> None:
+        """Schedule the next state write at the nearest tariff/time boundary."""
+        self._cancel_boundary_refresh()
+        when = self._boundary_update_at()
+        if not when:
+            return
+
+        now = dt_util.now()
+        if when <= now:
+            self.async_write_ha_state()
+            when = self._boundary_update_at()
+            if not when or when <= now:
+                return
+
+        @callback
+        def _at_boundary(_now) -> None:
+            self._boundary_unsub = None
+            self.async_write_ha_state()
+            self._schedule_boundary_refresh()
+
+        self._boundary_unsub = async_track_point_in_time(self.hass, _at_boundary, when)
+
+
+def _next_tariff_boundary(data: Dict[str, Any], now: Any) -> Optional[Any]:
+    """Return the next future tariff switch datetime from coordinator data."""
+    if not data:
+        return None
+    next_switch = get_next_future_switch(data, now=now)
+    if not next_switch:
+        return None
+    return next_switch["datetime"]
+
+
+def _next_midnight(now: Any) -> Any:
+    """Return the next local midnight after `now`."""
+    return (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
 
 def _reliability_attrs(data: Dict[str, Any]) -> Dict[str, Any]:
@@ -70,7 +145,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class ZSEHDOTariffSensor(CoordinatorEntity, BinarySensorEntity):
+class ZSEHDOTariffSensor(ZSEBoundaryEntityMixin, CoordinatorEntity, BinarySensorEntity):
     """Binary sensor pre aktuálnu tarifu (ON = nízka, OFF = vysoká)."""
 
     def __init__(self, coordinator, entry: ConfigEntry, hdo_number: int):
@@ -81,6 +156,10 @@ class ZSEHDOTariffSensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_unique_id = f"zse_hdo_{hdo_number}_tariff"
         self._attr_name = f"ZSE HDO {hdo_number} Tarifa"
         self._attr_device_class = BinarySensorDeviceClass.POWER
+
+    def _boundary_update_at(self) -> Optional[Any]:
+        """Flip tariff state exactly when the schedule boundary is reached."""
+        return _next_tariff_boundary(self.coordinator.data, dt_util.now())
 
     @property
     def is_on(self) -> bool:
@@ -113,7 +192,7 @@ class ZSEHDOTariffSensor(CoordinatorEntity, BinarySensorEntity):
         return "mdi:flash" if self.is_on else "mdi:flash-off"
 
 
-class ZSEHDONextSwitchSensor(CoordinatorEntity, SensorEntity):
+class ZSEHDONextSwitchSensor(ZSEBoundaryEntityMixin, CoordinatorEntity, SensorEntity):
     """Sensor pre najbližšie prepnutie tarify."""
 
     def __init__(self, coordinator, entry: ConfigEntry, hdo_number: int):
@@ -125,12 +204,16 @@ class ZSEHDONextSwitchSensor(CoordinatorEntity, SensorEntity):
         self._attr_name = f"ZSE HDO {hdo_number} Ďalšie prepnutie"
         self._attr_icon = "mdi:clock-outline"
 
+    def _boundary_update_at(self) -> Optional[Any]:
+        """Advance next-switch state when the predicted switch time passes."""
+        return _next_tariff_boundary(self.coordinator.data, dt_util.now())
+
     def _get_next_switch(self) -> Optional[Dict[str, Any]]:
         """Calculate next tariff switch."""
         if not self.coordinator.data:
             return None
 
-        return calculate_next_switch(self.coordinator.data, now=dt_util.now())
+        return get_next_future_switch(self.coordinator.data, now=dt_util.now())
 
     @property
     def native_value(self) -> Optional[str]:
@@ -162,7 +245,7 @@ class ZSEHDONextSwitchSensor(CoordinatorEntity, SensorEntity):
         }
 
 
-class ZSEHDOTodayScheduleSensor(CoordinatorEntity, SensorEntity):
+class ZSEHDOTodayScheduleSensor(ZSEBoundaryEntityMixin, CoordinatorEntity, SensorEntity):
     """Sensor s dnešným rozvrhom."""
 
     def __init__(self, coordinator, entry: ConfigEntry, hdo_number: int):
@@ -173,6 +256,16 @@ class ZSEHDOTodayScheduleSensor(CoordinatorEntity, SensorEntity):
         self._attr_unique_id = f"zse_hdo_{hdo_number}_today_schedule"
         self._attr_name = f"ZSE HDO {hdo_number} Dnešný rozvrh"
         self._attr_icon = "mdi:calendar-today"
+
+    def _boundary_update_at(self) -> Optional[Any]:
+        """Refresh at midnight and tariff boundaries (weekday/weekend rollover)."""
+        now = dt_util.now()
+        candidates = [_next_midnight(now)]
+        tariff_boundary = _next_tariff_boundary(self.coordinator.data, now)
+        if tariff_boundary:
+            candidates.append(tariff_boundary)
+        future = [candidate for candidate in candidates if candidate > now]
+        return min(future) if future else None
 
     @property
     def native_value(self) -> str:
@@ -207,7 +300,7 @@ class ZSEHDOTodayScheduleSensor(CoordinatorEntity, SensorEntity):
         }
 
 
-class ZSEHDOLowRemainingSensor(CoordinatorEntity, SensorEntity):
+class ZSEHDOLowRemainingSensor(ZSEBoundaryEntityMixin, CoordinatorEntity, SensorEntity):
     """Helper sensor with remaining minutes in active low-tariff window."""
 
     def __init__(self, coordinator, entry: ConfigEntry, hdo_number: int):
@@ -219,6 +312,23 @@ class ZSEHDOLowRemainingSensor(CoordinatorEntity, SensorEntity):
         self._attr_name = f"ZSE HDO {hdo_number} Zostavajuca nizka tarifa"
         self._attr_icon = "mdi:timer-sand"
         self._attr_native_unit_of_measurement = "min"
+
+    def _boundary_update_at(self) -> Optional[Any]:
+        """Tick every minute during low tariff and refresh on period boundaries."""
+        if not self.coordinator.data:
+            return None
+
+        now = dt_util.now()
+        if is_low_tariff(self.coordinator.data, now=now):
+            period_end = self._active_low_period_end(now)
+            if period_end and period_end > now:
+                next_minute = now.replace(second=0, microsecond=0) + timedelta(minutes=1)
+                return min(period_end, next_minute)
+
+        next_switch = get_next_future_switch(self.coordinator.data, now=now)
+        if next_switch and next_switch.get("to_tariff") == "low":
+            return next_switch["datetime"]
+        return None
 
     def _active_low_period_end(self, now: Any) -> Optional[Any]:
         """Return end datetime for current low-tariff period."""

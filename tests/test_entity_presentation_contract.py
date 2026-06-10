@@ -57,6 +57,10 @@ def _load_sensor_module():
     ha_update.CoordinatorEntity = _FakeCoordinatorEntity
     sys.modules["homeassistant.helpers.update_coordinator"] = ha_update
 
+    ha_event = types.ModuleType("homeassistant.helpers.event")
+    ha_event.async_track_point_in_time = lambda hass, callback, when: (lambda: None)
+    sys.modules["homeassistant.helpers.event"] = ha_event
+
     ha_util = types.ModuleType("homeassistant.util")
     ha_util.__path__ = []
     sys.modules["homeassistant.util"] = ha_util
@@ -82,6 +86,7 @@ def _load_sensor_module():
         lambda data, now: data.get("workday", []) if data else []
     )
     time_semantics.is_low_tariff = lambda data, now: bool(data.get("workday"))
+    time_semantics.get_next_future_switch = time_semantics.calculate_next_switch
     sys.modules["custom_components.zse_hdo.time_semantics"] = time_semantics
 
     sensor_path = package_dir / "sensor.py"

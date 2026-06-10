@@ -113,6 +113,7 @@ Po konfigurácii sa vytvoria nasledujúce entity:
 - Integrácia **automaticky sťahuje** aktuálne dáta z www.zsdis.sk
 - **Interval**: konfigurovateľný (5 min / 1 h / 1 deň / 1 týždeň / 1 mesiac)
 - **Zmeny na webe** sa automaticky prejavia v Home Assistant
+- **Tarifné entity** (tarifa, ďalšie prepnutie, dnešný rozvrh, zostávajúca nízka) sa **aktualizujú aj na hraniciach tarify** — aj keď je interval sťahovania dlhý (napr. 1 týždeň), stav sa prepíše presne v čase prepnutia
 
 ## 🚀 Release Workflow
 
@@ -224,10 +225,21 @@ Integrácia podporuje **všetkých 44 HDO čísel**:
 
 ### Nesprávne dáta
 - Integrácia automaticky sťahuje dáta z webu ZSE
-- Ak sa rozvrh zmenil, počkajte 5 minút na automatickú aktualizáciu
+- Ak sa rozvrh zmenil, počkajte na ďalší refresh interval alebo reštartujte integráciu
 - Môžete manuálne vyžiadať aktualizáciu cez Developer Tools
 
+### Záporný čas do ďalšej tarify (napr. „o -14h“)
+- Typicky ide o **zastaralý stav entity** pred v1.2.2 pri dlhom refresh intervale
+- Po aktualizácii na v1.2.2 reštartujte integráciu ZSE HDO
+- V Lovelace kartách preferujte `sensor.zse_hdo_XXX_next_switch` a relatívny čas počítajte z `as_timestamp()` + `now()` (viď `EXAMPLES.md`)
+
 ## 📝 Changelog
+
+### v1.2.2 (2026-06-10)
+**Bugfix — živá aktualizácia tarifných entít:**
+- 🐛 Opravené zamrznutie stavu `next_switch`, tarify a súvisiacich senzorov medzi refreshmi koordinátora (záporný relatívny čas na dashboarde)
+- ✅ Entity si naplánujú `async_write_ha_state()` na každej hranici tarify a o polnoci (dnešný rozvrh)
+- ✅ Nový helper `get_next_future_switch()` zabraňuje zápisu času prepnutia v minulosti
 
 ### v1.2.1 (2026-04-30)
 **Stabilization + automation pack release:**

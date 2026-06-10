@@ -29,7 +29,7 @@ Three layers, one per file, wired together in `__init__.py:async_setup_entry`:
    - `_async_update_data` caches the last successful payload in `self._last_known_data` and returns it on fetch errors so entities stay available; only the very first failure (no cache yet) raises `UpdateFailed`.
 
 3. **`sensor.py` — three `CoordinatorEntity` subclasses** registered for the `sensor` platform (the binary sensor is also created from `sensor.py`, not a separate `binary_sensor` platform — `PLATFORMS = ["sensor"]` in `__init__.py`):
-   - `ZSEHDOTariffSensor` (binary): recomputes `is_on` on every read from the cached schedule and *current wall-clock time*, including midnight-crossing periods (`end < start`). This is intentional — the coordinator only refreshes the schedule, not the live tariff; sensor evaluation is what makes the state flip at period boundaries without a fetch.
+   - `ZSEHDOTariffSensor` (binary): recomputes `is_on` from the cached schedule and *current wall-clock time*, including midnight-crossing periods (`end < start`). Since v1.2.2, all time-sensitive entities use `ZSEBoundaryEntityMixin` to call `async_write_ha_state()` at tariff boundaries (via `async_track_point_in_time`), so HA state flips on schedule even when coordinator poll interval is long.
    - `ZSEHDONextSwitchSensor`: same midnight-crossing logic; three-step lookup — currently inside a low period → switch-to-high at its end (advance to tomorrow if the period started before midnight); else next start later today; else tomorrow's first start.
    - `ZSEHDOTodayScheduleSensor`: count + list of today's low-tariff periods, branched on `weekday() >= 5`.
 

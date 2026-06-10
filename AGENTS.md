@@ -23,7 +23,7 @@ Three layers, one per file, wired together in `__init__.py:async_setup_entry`:
 
 1. **`parser.py` — `ZSEHDOLiveParser`**: pure HTTP/parsing layer. `fetch_page()` GETs the ZSE page; `_extract_javascript_array()` finds `var <name> = [...]` and walks brackets manually (respecting strings/escapes) because the JS is not valid JSON. It then rewrites single->double quotes, quotes bare keys, and strips trailing commas before `json.loads`. `_normalize_schedule()` filters intervals where `t_type == "nt"` and splits by `weekday`/`weekend`. `get_schedule(hdo_number)` returns the dict consumed by the coordinator.
 2. **`coordinator.py` — `ZSEHDOCoordinator`**: extends HA `DataUpdateCoordinator`. Supports `interval` and `scheduled` refresh modes from `const.py` and caches last successful payload for fallback on transient failures.
-3. **`sensor.py` — entity layer**: exposes tariff status, next switch, and today's schedule from coordinator data. Time-boundary logic handles midnight crossing and weekday/weekend behavior.
+3. **`sensor.py` — entity layer**: exposes tariff status, next switch, today's schedule, and low-remaining helper from coordinator data. Time-boundary logic handles midnight crossing and weekday/weekend behavior. Since v1.2.2, time-sensitive entities schedule `async_write_ha_state()` at tariff boundaries (and midnight for today's schedule) so state stays live between coordinator polls.
 4. **`config_flow.py`**: populates HDO choices dynamically from live parser data, enforces unique ID (`zse_hdo_<number>`), and supports changing refresh settings through options flow with entry reload.
 
 ## Conventions specific to this codebase
